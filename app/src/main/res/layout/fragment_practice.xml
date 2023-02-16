@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Fragment.PracticeFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingTop="20dp">
+        <!-- TODO: Update blank fragment layout -->
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/subject_viewpage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.viewpager.widget.PagerTabStrip
+                android:id="@+id/page_title"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp">
+
+            </androidx.viewpager.widget.PagerTabStrip>
+        </androidx.viewpager.widget.ViewPager>
+
+        <TextView
+            android:id="@+id/practice_hear"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="60dp"
+            android:background="@drawable/textview_selecter"
+            android:drawableRight="@drawable/arrow_right"
+            android:drawablePadding="-40dp"
+            android:gravity="center"
+            android:paddingLeft="60dp"
+            android:paddingRight="60dp"
+            android:text="@string/practice_hear"
+            android:textSize="30dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/practice_spoke"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="60dp"
+            android:background="@drawable/textview_selecter"
+            android:drawableRight="@drawable/arrow_right"
+            android:drawablePadding="-40dp"
+            android:gravity="center"
+            android:paddingLeft="60dp"
+            android:paddingRight="60dp"
+            android:text="@string/practice_spoke"
+            android:textSize="30dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/practice_write"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="60dp"
+            android:background="@drawable/textview_selecter"
+            android:drawableRight="@drawable/arrow_right"
+            android:drawablePadding="-40dp"
+            android:gravity="center"
+            android:paddingLeft="60dp"
+            android:paddingRight="60dp"
+            android:text="@string/practice_write"
+            android:textSize="30dp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+</FrameLayout>

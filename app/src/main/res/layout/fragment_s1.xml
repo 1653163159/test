@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/hear"
+    tools:context=".SubjectFragment.S1Fragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="5"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:id="@+id/audio_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:paddingTop="50dp"
+            android:paddingBottom="2dp"
+            android:text="点击播放音频"
+            android:textSize="20dp" />
+
+        <ImageView
+            android:id="@+id/tv_play"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1"
+            android:src="@drawable/ic_baseline_play" />
+
+        <TextView
+            android:id="@+id/question"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1"
+            android:paddingLeft="20dp"
+            android:paddingTop="20dp"
+            android:paddingRight="5dp"
+            android:text="题目1"
+            android:textSize="20dp" />
+
+
+        <RadioGroup
+            android:id="@+id/answer_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:orientation="vertical"
+            android:paddingTop="30dp">
+
+            <RadioButton
+                android:id="@+id/ans_a"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="50dp"
+                android:layout_marginRight="50dp"
+                android:text="A" />
+
+            <RadioButton
+                android:id="@+id/ans_b"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="50dp"
+                android:layout_marginRight="50dp"
+                android:text="B" />
+
+            <RadioButton
+                android:id="@+id/ans_c"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="50dp"
+                android:layout_marginRight="50dp"
+                android:text="C" />
+
+            <RadioButton
+                android:id="@+id/ans_d"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="50dp"
+                android:layout_marginRight="50dp"
+                android:text="D" />
+        </RadioGroup>
+    </LinearLayout>
+
+</FrameLayout>

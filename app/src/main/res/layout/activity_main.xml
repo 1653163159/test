@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/cornFlowerBlue">
+
+        <TextView
+            android:id="@+id/title_app"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="练习"
+            android:textColor="@color/black"
+            android:textSize="25dp" />
+
+        <ImageView
+            android:id="@+id/search_new_friend"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="25dp"
+            android:src="@drawable/ic__add_circle"
+            android:visibility="invisible" />
+
+        <ImageView
+            android:id="@+id/friend_request"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginTop="17dp"
+            android:layout_marginRight="20dp"
+            android:layout_toLeftOf="@id/search_new_friend"
+            android:src="@drawable/ic_message"
+            android:visibility="invisible" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:id="@+id/main_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/view_line" />
+
+        <View
+            android:id="@+id/view_line"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_above="@+id/r1_bottom"
+            android:background="#DCDBDB" />
+
+        <LinearLayout
+            android:id="@+id/r1_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="#F2F2F2"
+            android:orientation="horizontal"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp">
+
+            <TextView
+                android:id="@+id/tv_main"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:drawableTop="@drawable/tab_item_practice_selecter"
+                android:focusable="true"
+                android:gravity="center"
+                android:text="@string/main"
+                android:textColor="@drawable/tab_item_txt_selecter" />
+
+            <TextView
+                android:id="@+id/tv_exam"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:drawableTop="@drawable/tab_item_exam_selecter"
+                android:focusable="true"
+                android:gravity="center"
+                android:text="@string/exam"
+                android:textColor="@drawable/tab_item_txt_selecter" />
+
+            <TextView
+                android:id="@+id/tv_talk"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:drawableTop="@drawable/tab_item_talk_selecter"
+                android:focusable="true"
+                android:gravity="center"
+                android:text="@string/talk"
+                android:textColor="@drawable/tab_item_txt_selecter" />
+
+            <TextView
+                android:id="@+id/tv_mine"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:drawableTop="@drawable/tab_item_mine_selecter"
+                android:focusable="true"
+                android:gravity="center"
+                android:text="@string/mine"
+                android:textColor="@drawable/tab_item_txt_selecter" />
+        </LinearLayout>
+    </RelativeLayout>
+</LinearLayout>
