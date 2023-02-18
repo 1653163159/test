@@ -10,6 +10,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.test.R;
 import com.example.test.pojo.Subject;
@@ -32,8 +33,8 @@ public class SubjectListViewAdapter extends BaseAdapter {
     public SubjectListViewAdapter(Context context, List<Subject> items) {
         this.items = items;
         inflater = LayoutInflater.from(context);
-        answersSentence = new SubjectAnswer[100];
-        answersAlphabet = new SubjectAnswer[100];
+        answersSentence = new SubjectAnswer[110];
+        answersAlphabet = new SubjectAnswer[110];
     }
 
     @Override
@@ -129,7 +130,7 @@ public class SubjectListViewAdapter extends BaseAdapter {
                     RadioButton button = finalConvertView1.findViewById(viewHolder3.group.getCheckedRadioButtonId());
                     int index = viewHolder3.group.indexOfChild(button);
                     int lo = Integer.valueOf(items.get(position).getNumber());
-                    answersAlphabet[lo] = new SubjectAnswer(items.get(position).getNumber(), intToAlphabet(index));
+                    answersAlphabet[lo] = new SubjectAnswer(items.get(position).getNumber(), intToAlphabet(index + 1));
                     answersSentence[lo] = new SubjectAnswer(items.get(position).getNumber(), (String) button.getText());
                 }
             });
@@ -145,6 +146,12 @@ public class SubjectListViewAdapter extends BaseAdapter {
             viewHolder3.c.setText(items.get(position).getOptionC());
             viewHolder3.d.setText(items.get(position).getOptionD().split("E")[0]);
             viewHolder3.e.setText(items.get(position).getOptionD().split("E")[1]);
+            int lo = Integer.valueOf(items.get(position).getNumber());
+            if (answersAlphabet[lo] != null) {
+                int index = alphabetToInt(answersAlphabet[lo].getAnswer()) - 1;
+                RadioButton button = (RadioButton) viewHolder3.group.getChildAt(index);
+                viewHolder3.group.check(button.getId());
+            }
         }
         return convertView;
     }

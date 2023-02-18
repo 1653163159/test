@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="select">
-        <item>等级一</item>
-        <item>等级二</item>
-        <item>等级三</item>
-        <item>等级四</item>
-        <item>等级五</item>
-        <item>等级六</item>
+        <item>HSK1</item>
+        <item>HSK2</item>
+        <item>HSK3</item>
+        <item>HSK4</item>
+        <item>HSK5</item>
+        <item>HSK6</item>
     </string-array>
 
 </resources>

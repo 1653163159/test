@@ -1,14 +1,18 @@
 package com.example.test.Fragment;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.PagerTabStrip;
+import androidx.viewpager.widget.ViewPager;
 
 import android.os.Handler;
 import android.os.Message;
 import android.util.Base64;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +21,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 
 import com.example.test.Adapter.ExamListViewAdapter;
+import com.example.test.Adapter.ExamViewpageAdapter;
 import com.example.test.R;
 import com.example.test.SubjectFragment.SubjectActivity;
 import com.example.test.pojo.Hsk;
@@ -59,6 +64,7 @@ public class ExamFragment extends Fragment {
     public List<Hsk> examItems = new ArrayList<>();
     public List<String> subjectPathItems = new ArrayList<>();//存放对应试题的存储路径
     public List<String> answerPathItems = new ArrayList<>();//存放对应试题答案的存储路径
+    public List<String> audioPathItems = new ArrayList<>();//存放对应试题答案的存储路径
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -112,6 +118,11 @@ public class ExamFragment extends Fragment {
     }
 
     void initView() {
+        examList = examFragment.findViewById(R.id.exam_list);
+        examItems = new ArrayList<>();
+        examList.setAdapter(examListViewAdapter = new ExamListViewAdapter(getContext(), examItems));
+        examList.setOnItemClickListener(examListListener);
+
         level = examFragment.findViewById(R.id.exam_level);
         level.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -129,10 +140,6 @@ public class ExamFragment extends Fragment {
             }
         });
         level.setSelection(5);
-        examList = examFragment.findViewById(R.id.exam_list);
-        examItems = new ArrayList<>();
-        examList.setAdapter(examListViewAdapter = new ExamListViewAdapter(getActivity().getApplicationContext(), examItems));
-        examList.setOnItemClickListener(examListListener);
     }
 
     /**
@@ -169,6 +176,7 @@ public class ExamFragment extends Fragment {
                 examItems.add(hsk);
                 String subjectPath = getActivity().getExternalCacheDir().getAbsolutePath() + File.separator + hsk.getIdhsk() + "-question.json";
                 String answerPath = getActivity().getExternalCacheDir().getAbsolutePath() + File.separator + hsk.getIdhsk() + "-answer.json";
+                String audioPath = getActivity().getExternalCacheDir().getAbsolutePath() + File.separator + hsk.getIdhsk() + "-audio.mp3";
                 FileOutputStream fileOutputStream = null;
                 try {
                     fileOutputStream = new FileOutputStream(subjectPath);
@@ -177,6 +185,9 @@ public class ExamFragment extends Fragment {
                     fileOutputStream = new FileOutputStream(answerPath);
                     fileOutputStream.write(Base64.decode(hsk.getAnswer(), Base64.DEFAULT));
                     fileOutputStream.close();
+                    fileOutputStream = new FileOutputStream(audioPath);
+                    fileOutputStream.write(Base64.decode(hsk.getAudio(), Base64.DEFAULT));
+                    fileOutputStream.close();
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
@@ -184,6 +195,7 @@ public class ExamFragment extends Fragment {
                 }
                 subjectPathItems.add(subjectPath);
                 answerPathItems.add(answerPath);
+                audioPathItems.add(audioPath);
             }
             if (examItems.size() == 0) {
                 Hsk hsk = new Hsk();
@@ -204,6 +216,7 @@ public class ExamFragment extends Fragment {
             Intent intent = new Intent(getActivity(), SubjectActivity.class);
             intent.putExtra("subject", subjectPathItems.get(position));
             intent.putExtra("answer", answerPathItems.get(position));
+            intent.putExtra("audio", audioPathItems.get(position));
             intent.putExtra("name", examItems.get(position).getIdhsk());
             startActivity(intent);
         }
