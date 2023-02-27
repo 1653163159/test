@@ -1,4 +1,4 @@
-package com.example.test.SubjectFragment;
+package com.example.test.Exam;
 
 import android.app.Activity;
 import android.graphics.*;
@@ -28,7 +28,6 @@ import com.baidu.ocr.sdk.model.WordSimple;
 import com.example.test.R;
 import com.example.test.pojo.PictureBank;
 import com.example.test.tools.LinePathView;
-import com.example.test.tools.ORCApplication;
 import com.google.gson.Gson;
 
 import java.io.*;

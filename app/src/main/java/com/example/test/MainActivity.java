@@ -21,10 +21,10 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 
-import com.example.test.Fragment.ExamFragment;
-import com.example.test.Fragment.MineFragment;
-import com.example.test.Fragment.PracticeFragment;
-import com.example.test.Fragment.TalkFragment;
+import com.example.test.MainFragment.ExamFragment;
+import com.example.test.MainFragment.MineFragment;
+import com.example.test.MainFragment.PracticeFragment;
+import com.example.test.MainFragment.TalkFragment;
 import com.example.test.Adapter.SearchListViewAdapter;
 import com.example.test.pojo.userInform;
 import com.example.test.tools.JsonUtil;
@@ -60,7 +60,7 @@ public class MainActivity extends FragmentActivity {
     private ImageView search_friend, request_friend;
 
     //openfireConfig
-    public String C_HOST = "192.168.31.86";//服务器在局域网中IP
+    public String C_HOST = "10.27.199.250";//服务器在局域网中IP
     public String C_DOMAIN = "192.168.0.107";//服务器主机名
     public String USER_NAME = "hqx", USER_PWD = "123456";
     public SmarkUtil smarkUti;

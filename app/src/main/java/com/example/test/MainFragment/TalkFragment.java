@@ -1,4 +1,4 @@
-package com.example.test.Fragment;
+package com.example.test.MainFragment;
 
 import android.app.Activity;
 import android.graphics.Rect;

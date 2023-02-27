@@ -1,7 +1,6 @@
-package com.example.test.SubjectFragment;
+package com.example.test.Exam;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -9,16 +8,11 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.test.Adapter.SubjectListViewAdapter;
-import com.example.test.MainActivity;
 import com.example.test.R;
 import com.example.test.pojo.Subject;
 import com.example.test.pojo.SubjectAnswer;
@@ -26,9 +20,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-
-import org.jivesoftware.smack.SmackException;
-import org.jxmpp.stringprep.XmppStringprepException;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;

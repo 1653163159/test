@@ -1,33 +1,30 @@
-package com.example.test.Fragment;
+package com.example.test.MainFragment;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 
+import android.speech.tts.TextToSpeech;
+
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.PagerTabStrip;
 import androidx.viewpager.widget.ViewPager;
-import androidx.viewpager2.widget.ViewPager2;
 
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.test.Adapter.PracticeViewpageAdapter;
+import com.example.test.Practice.PracticeActivity;
 import com.example.test.R;
-import com.example.test.SubjectFragment.S1Fragment;
-import com.example.test.SubjectFragment.S2Fragment;
-import com.example.test.SubjectFragment.S3Fragment;
-import com.example.test.SubjectFragment.SubjectActivity;
 
-import org.minidns.record.Record;
-
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -39,12 +36,11 @@ public class PracticeFragment extends Fragment {
     private Activity curActivity;
 
     TextView listening, writing, speaking;
-    private S1Fragment listenFragment;
-    private S2Fragment writeFragment;
-    private S3Fragment speakFragment;
+    private View listen_view, write_view, speak_view;
     String prefix = "http://10.27.199.250:8080/rest/";
+    TextToSpeech textToSpeech;
 
-    private List<Fragment> viewList;
+    private List<View> viewList;
     private List<String> titleList;
 
     // TODO: Rename parameter arguments, choose names that match
@@ -87,6 +83,7 @@ public class PracticeFragment extends Fragment {
         }
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -97,10 +94,23 @@ public class PracticeFragment extends Fragment {
         if (curActivity == null) {
             curActivity = getActivity();
         }
+        textToSpeech = new TextToSpeech(getContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if (status == TextToSpeech.SUCCESS) {
+                    textToSpeech.setLanguage(Locale.CHINESE);//中文
+                    textToSpeech.setSpeechRate(0.85f);
+                }
+            }
+        });
         viewList = new ArrayList<>();
-        viewList.add(listenFragment = S1Fragment.newInstance(prefix, null));
-        viewList.add(writeFragment = S2Fragment.newInstance(prefix, null));
-        viewList.add(speakFragment = S3Fragment.newInstance(prefix, null));
+        listen_view = LayoutInflater.from(getContext()).inflate(R.layout.practice_view_hear, null);
+        write_view = LayoutInflater.from(getContext()).inflate(R.layout.practice_view_write, null);
+        speak_view = LayoutInflater.from(getContext()).inflate(R.layout.practice_view_speak, null);
+        initLisView();
+        viewList.add(listen_view);
+        viewList.add(write_view);
+        viewList.add(speak_view);
         titleList = new ArrayList<>();
         titleList.add("听力练习");
         titleList.add("书写练习");
@@ -108,64 +118,46 @@ public class PracticeFragment extends Fragment {
         ViewPager viewPager = practiceLayout.findViewById(R.id.subject_viewpage);
         viewPager.setOffscreenPageLimit(2);
         viewPager.setCurrentItem(0);
-        PracticeViewpageAdapter viewpageAdapter = new PracticeViewpageAdapter(getFragmentManager(), viewList, titleList);
+        PracticeViewpageAdapter viewpageAdapter = new PracticeViewpageAdapter(viewList, titleList);
         viewPager.setAdapter(viewpageAdapter);
         PagerTabStrip tabStrip = practiceLayout.findViewById(R.id.page_title);
         tabStrip.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
         tabStrip.setTextColor(Color.BLACK);
         tabStrip.setTabIndicatorColorResource(R.color.cornFlowerBlue);
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                listenFragment.onDestroy();
-                writeFragment.onDestroy();
-                speakFragment.onDestroy();
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-
         return practiceLayout;
     }
 
-    void initView() {
-        listening = practiceLayout.findViewById(R.id.practice_hear);
-        writing = practiceLayout.findViewById(R.id.practice_write);
-        speaking = practiceLayout.findViewById(R.id.practice_spoke);
-        listening.setOnClickListener(new View.OnClickListener() {
+    void initLisView() {
+        TextView one = listen_view.findViewById(R.id.listen_type1);
+        TextView two = listen_view.findViewById(R.id.listen_type2);
+        one.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), SubjectActivity.class);
-                intent.putExtra("type", "听力练习");
-                startActivityForResult(intent, 11);
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), PracticeActivity.class);
+                intent.putExtra("title", one.getText().toString());
+                intent.putExtra("type", 1);
+                intent.putExtra("prefix", prefix);
+                startActivity(intent);
 
             }
         });
-        writing.setOnClickListener(new View.OnClickListener() {
+        two.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), SubjectActivity.class);
-                intent.putExtra("type", "书法练习");
-                startActivityForResult(intent, 11);
-
+            public void onClick(View v) {
+                if (textToSpeech != null && !textToSpeech.isSpeaking()) {
+                    textToSpeech.setLanguage(Locale.CHINESE);
+                    textToSpeech.setPitch(1.0f);// 设置音调，值越大声音越尖（女生），值越小则变成男声,1.0是常规
+                    textToSpeech.speak(two.getText().toString(),
+                            TextToSpeech.QUEUE_FLUSH, null);
+                }
             }
         });
-        speaking.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), SubjectActivity.class);
-                intent.putExtra("type", "口语练习");
-                startActivityForResult(intent, 11);
+    }
 
-            }
-        });
+    public void releaseSpeech() {
+        if (textToSpeech != null) {
+            textToSpeech.stop(); // 不管是否正在朗读TTS都被打断
+            textToSpeech.shutdown(); // 关闭，释放资源
+        }
     }
 }

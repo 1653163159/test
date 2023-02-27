@@ -1,4 +1,4 @@
-package com.example.test.SubjectFragment;
+package com.example.test.Exam;
 
 import android.app.Activity;
 import android.media.AudioManager;

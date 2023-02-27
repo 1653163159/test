@@ -1,4 +1,4 @@
-package com.example.test.Fragment;
+package com.example.test.MainFragment;
 
 import android.os.Bundle;
 

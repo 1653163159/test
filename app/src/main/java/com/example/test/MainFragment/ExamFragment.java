@@ -1,18 +1,14 @@
-package com.example.test.Fragment;
+package com.example.test.MainFragment;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.PagerTabStrip;
-import androidx.viewpager.widget.ViewPager;
 
 import android.os.Handler;
 import android.os.Message;
 import android.util.Base64;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,23 +17,18 @@ import android.widget.ListView;
 import android.widget.Spinner;
 
 import com.example.test.Adapter.ExamListViewAdapter;
-import com.example.test.Adapter.ExamViewpageAdapter;
 import com.example.test.R;
-import com.example.test.SubjectFragment.SubjectActivity;
+import com.example.test.Exam.SubjectActivity;
 import com.example.test.pojo.Hsk;
-import com.example.test.pojo.Subject;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -196,6 +187,7 @@ public class ExamFragment extends Fragment {
                 subjectPathItems.add(subjectPath);
                 answerPathItems.add(answerPath);
                 audioPathItems.add(audioPath);
+                examListViewAdapter.notifyDataSetChanged();
             }
             if (examItems.size() == 0) {
                 Hsk hsk = new Hsk();
