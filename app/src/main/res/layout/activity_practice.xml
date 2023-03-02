@@ -33,9 +33,43 @@
 
     </RelativeLayout>
 
+    <LinearLayout
+        android:id="@+id/content_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/practice_bar"
+        android:layout_margin="5dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/copy_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="8"
+                android:hint="输入文本查看发音"
+                android:textSize="15sp" />
+
+            <Button
+                android:id="@+id/speak_copy_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="确定" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/pinyin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="10sp" />
+    </LinearLayout>
+
     <FrameLayout
         android:id="@+id/practice_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/practice_bar" />
+        android:layout_below="@id/content_search" />
 </RelativeLayout>

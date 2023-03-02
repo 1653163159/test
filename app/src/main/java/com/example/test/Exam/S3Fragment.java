@@ -10,11 +10,13 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.baidu.aip.asrwakeup3.core.mini.AutoCheck;
@@ -31,6 +33,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import okhttp3.OkHttpClient;
@@ -50,6 +53,7 @@ public class S3Fragment extends Fragment {
     EventManager asr;
     private boolean logTime = true;
     protected boolean enableOffline = false; // 测试离线命令词，需要改成true
+    TextToSpeech textToSpeech;
 
     String requestType;//向服务器请求数据的类型
 
@@ -70,9 +74,25 @@ public class S3Fragment extends Fragment {
     Button record;
     private String answer;
 
-    private void initBind() {
+    private void initView() {
+        textToSpeech = new TextToSpeech(getContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if (status == TextToSpeech.SUCCESS) {
+                    textToSpeech.setLanguage(Locale.CHINESE);//中文
+                    textToSpeech.setSpeechRate(0.80f);
+                }
+            }
+        });
+
         title = curLayout.findViewById(R.id.speech_title);
+        title.setText("行宫\n" +
+                "元稹 〔唐代〕\n" +
+                "\n" +
+                "寥落古行宫，宫花寂寞红。\n" +
+                "白头宫女在，闲坐说玄宗。");
         content = curLayout.findViewById(R.id.speech_text);
+        content.setText("等待发言");
         record = curLayout.findViewById(R.id.audio_record);
         record.setOnClickListener(recordListener);
     }
@@ -128,7 +148,7 @@ public class S3Fragment extends Fragment {
         curLayout = inflater.inflate(R.layout.fragment_s3, container, false);
         curActivity = getActivity();
         initPermission();
-        initBind();
+        initView();
 
         asr = EventManagerFactory.create(curActivity.getApplicationContext(), "asr");
         asr.registerListener(yourListener);

@@ -63,4 +63,5 @@ dependencies {
     implementation "org.igniterealtime.smack:smack-android-extensions:4.3.4"
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
     implementation 'com.makeramen:roundedimageview:2.3.0'
+    implementation 'com.belerweb:pinyin4j:2.5.1'
 }

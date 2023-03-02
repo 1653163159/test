@@ -58,6 +58,7 @@ public class MainActivity extends FragmentActivity {
     private int curID = R.id.tv_main;//设置默认主页
     private TextView tvMain, tvExam, tvTalk, tvMine;
     private ImageView search_friend, request_friend;
+    private Spinner practiceLevel;
 
     //openfireConfig
     public String C_HOST = "10.27.199.250";//服务器在局域网中IP
@@ -97,6 +98,20 @@ public class MainActivity extends FragmentActivity {
         tvTalk = findViewById(R.id.tv_talk);
         tvMine = findViewById(R.id.tv_mine);
 
+        practiceLevel = findViewById(R.id.practice_level);
+        practiceLevel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String level = practiceLevel.getSelectedItem().toString();
+                if (practiceFragment != null)
+                    practiceFragment.setLevel(level);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
         //工具栏搜索和好友请求
         search_friend = findViewById(R.id.search_new_friend);
         request_friend = findViewById(R.id.friend_request);
@@ -145,7 +160,7 @@ public class MainActivity extends FragmentActivity {
         hideFragment(transaction);
         if (id == R.id.tv_main) {
             if (practiceFragment == null) {
-                practiceFragment = PracticeFragment.newInstance(prefix,null);
+                practiceFragment = PracticeFragment.newInstance(prefix, null);
                 transaction.add(R.id.main_container, practiceFragment);
             } else {
                 transaction.show(practiceFragment);
@@ -197,11 +212,13 @@ public class MainActivity extends FragmentActivity {
         tvExam.setSelected(false);
         tvTalk.setSelected(false);
         tvMine.setSelected(false);
+        practiceLevel.setVisibility(View.INVISIBLE);
         search_friend.setVisibility(View.INVISIBLE);
         request_friend.setVisibility(View.INVISIBLE);
         TextView title = findViewById(R.id.title_app);
         switch (id) {
             case R.id.tv_main:
+                practiceLevel.setVisibility(View.VISIBLE);
                 tvMain.setSelected(true);
                 title.setText("练习");
                 break;
