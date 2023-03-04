@@ -10,13 +10,11 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.baidu.aip.asrwakeup3.core.mini.AutoCheck;
@@ -53,7 +51,6 @@ public class S3Fragment extends Fragment {
     EventManager asr;
     private boolean logTime = true;
     protected boolean enableOffline = false; // 测试离线命令词，需要改成true
-    TextToSpeech textToSpeech;
 
     String requestType;//向服务器请求数据的类型
 
@@ -75,16 +72,6 @@ public class S3Fragment extends Fragment {
     private String answer;
 
     private void initView() {
-        textToSpeech = new TextToSpeech(getContext(), new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int status) {
-                if (status == TextToSpeech.SUCCESS) {
-                    textToSpeech.setLanguage(Locale.CHINESE);//中文
-                    textToSpeech.setSpeechRate(0.80f);
-                }
-            }
-        });
-
         title = curLayout.findViewById(R.id.speech_title);
         title.setText("行宫\n" +
                 "元稹 〔唐代〕\n" +

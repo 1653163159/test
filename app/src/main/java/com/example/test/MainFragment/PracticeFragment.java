@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 
-import android.speech.tts.TextToSpeech;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.PagerTabStrip;
@@ -25,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.test.Adapter.PracticeViewpageAdapter;
+import com.example.test.Practice.Flags;
 import com.example.test.Practice.PracticeActivity;
 import com.example.test.R;
 
@@ -45,8 +44,7 @@ public class PracticeFragment extends Fragment {
     private View listen_view, write_view, speak_view;
     String prefix = "http://10.27.199.250:8080/rest/";
     String level = "初级";
-    TextToSpeech textToSpeech;
-    TextView Lone, Ltwo, Sone, Stwo, Wone, Wtwo;
+    TextView Lone, Ltwo, Sone, Stwo, Wone, Wtwo, Wthree;
 
     private List<View> viewList;
     private List<String> titleList;
@@ -105,15 +103,6 @@ public class PracticeFragment extends Fragment {
         if (curActivity == null) {
             curActivity = getActivity();
         }
-        textToSpeech = new TextToSpeech(getContext(), new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int status) {
-                if (status == TextToSpeech.SUCCESS) {
-                    textToSpeech.setLanguage(Locale.CHINESE);//中文
-                    textToSpeech.setSpeechRate(0.85f);
-                }
-            }
-        });
         viewList = new ArrayList<>();
         listen_view = LayoutInflater.from(getContext()).inflate(R.layout.practice_view_hear, null);
         write_view = LayoutInflater.from(getContext()).inflate(R.layout.practice_view_write, null);
@@ -124,7 +113,7 @@ public class PracticeFragment extends Fragment {
         viewList.add(speak_view);
         titleList = new ArrayList<>();
         titleList.add("听力练习");
-        titleList.add("书写练习");
+        titleList.add("阅读练习");
         titleList.add("口语练习");
         ViewPager viewPager = practiceLayout.findViewById(R.id.subject_viewpage);
         viewPager.setOffscreenPageLimit(2);
@@ -151,65 +140,61 @@ public class PracticeFragment extends Fragment {
 
         Wone = write_view.findViewById(R.id.write_type1);
         Wtwo = write_view.findViewById(R.id.write_type2);
+        Wthree = write_view.findViewById(R.id.write_type3);
         Wone.setOnClickListener(w1);
         Wtwo.setOnClickListener(w2);
+        Wthree.setOnClickListener(w3);
     }
 
     View.OnClickListener l1 = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Intent intent = new Intent(getActivity(), PracticeActivity.class);
-            intent.putExtra("title", Lone.getText().toString());
-            intent.putExtra("type", 1);
-            intent.putExtra("prefix", prefix);
-            startActivity(intent);
-
+            navigation(Lone.getText().toString(), Flags.LISTEN_TYPE1);
         }
     };
     View.OnClickListener l2 = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            System.out.println(level);
-            if (textToSpeech != null && !textToSpeech.isSpeaking()) {
-                textToSpeech.setLanguage(Locale.CHINESE);
-                textToSpeech.setPitch(1.0f);// 设置音调，值越大声音越尖（女生），值越小则变成男声,1.0是常规
-                textToSpeech.speak(Ltwo.getText().toString(), TextToSpeech.QUEUE_FLUSH, null);
-            }
+            navigation(Ltwo.getText().toString(), Flags.LISTEN_TYPE2);
         }
     };
     View.OnClickListener s1 = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Intent intent = new Intent(getActivity(), PracticeActivity.class);
-            intent.putExtra("title", Sone.getText().toString());
-            intent.putExtra("type", 3);
-            intent.putExtra("prefix", prefix);
-            startActivity(intent);
+            navigation(Sone.getText().toString(), Flags.SPEAK_TYPE1);
         }
     };
     View.OnClickListener s2 = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-
+            navigation(Stwo.getText().toString(), Flags.SPEAK_TYPE2);
         }
     };
     View.OnClickListener w1 = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-
+            navigation(Wone.getText().toString(), Flags.WRITE_TYPE1);
         }
     };
     View.OnClickListener w2 = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-
+            navigation(Wtwo.getText().toString(), Flags.WRITE_TYPE2);
+        }
+    };
+    View.OnClickListener w3 = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            navigation(Wthree.getText().toString(), Flags.WRITE_TYPE3);
         }
     };
 
-    public void releaseSpeech() {
-        if (textToSpeech != null) {
-            textToSpeech.stop(); // 不管是否正在朗读TTS都被打断
-            textToSpeech.shutdown(); // 关闭，释放资源
-        }
+    private void navigation(String title, String type) {
+        Intent intent = new Intent(getActivity(), PracticeActivity.class);
+        intent.putExtra("title", title);
+        intent.putExtra("type", type);
+        intent.putExtra("prefix", prefix);
+        intent.putExtra("level", level);
+        startActivity(intent);
     }
 }

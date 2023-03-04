@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 
 import com.example.test.Adapter.ExamListViewAdapter;
@@ -53,9 +54,8 @@ public class ExamFragment extends Fragment {
     public ListView examList;
     ExamListViewAdapter examListViewAdapter;
     public List<Hsk> examItems = new ArrayList<>();
-    public List<String> subjectPathItems = new ArrayList<>();//存放对应试题的存储路径
-    public List<String> answerPathItems = new ArrayList<>();//存放对应试题答案的存储路径
-    public List<String> audioPathItems = new ArrayList<>();//存放对应试题答案的存储路径
+    public int index = 0;
+    ProgressBar pg;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -109,6 +109,7 @@ public class ExamFragment extends Fragment {
     }
 
     void initView() {
+        pg = examFragment.findViewById(R.id.pg_bar);
         examList = examFragment.findViewById(R.id.exam_list);
         examItems = new ArrayList<>();
         examList.setAdapter(examListViewAdapter = new ExamListViewAdapter(getContext(), examItems));
@@ -119,8 +120,6 @@ public class ExamFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 examItems.clear();
-                subjectPathItems.clear();
-                answerPathItems.clear();
                 examListViewAdapter.notifyDataSetChanged();
                 getExamList(String.valueOf(position + 1));
             }
@@ -137,8 +136,10 @@ public class ExamFragment extends Fragment {
      * 获取对应难度试题列表
      */
     void getExamList(String level) {
+        pg.setVisibility(View.VISIBLE);
+        pg.bringToFront();
         Request.Builder builder = null;
-        builder = new Request.Builder().url(prefix + "exam/" + level);
+        builder = new Request.Builder().url(prefix + "exam/level/" + level);
         Call call = client.newCall(builder.build());
         call.enqueue(examListCallback);
     }
@@ -165,29 +166,6 @@ public class ExamFragment extends Fragment {
             for (JsonElement jsonElement : jsonArray) {
                 Hsk hsk = gson.fromJson(jsonElement, Hsk.class);
                 examItems.add(hsk);
-                String subjectPath = getActivity().getExternalCacheDir().getAbsolutePath() + File.separator + hsk.getIdhsk() + "-question.json";
-                String answerPath = getActivity().getExternalCacheDir().getAbsolutePath() + File.separator + hsk.getIdhsk() + "-answer.json";
-                String audioPath = getActivity().getExternalCacheDir().getAbsolutePath() + File.separator + hsk.getIdhsk() + "-audio.mp3";
-                FileOutputStream fileOutputStream = null;
-                try {
-                    fileOutputStream = new FileOutputStream(subjectPath);
-                    fileOutputStream.write(Base64.decode(hsk.getContent(), Base64.DEFAULT));
-                    fileOutputStream.close();
-                    fileOutputStream = new FileOutputStream(answerPath);
-                    fileOutputStream.write(Base64.decode(hsk.getAnswer(), Base64.DEFAULT));
-                    fileOutputStream.close();
-                    fileOutputStream = new FileOutputStream(audioPath);
-                    fileOutputStream.write(Base64.decode(hsk.getAudio(), Base64.DEFAULT));
-                    fileOutputStream.close();
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                subjectPathItems.add(subjectPath);
-                answerPathItems.add(answerPath);
-                audioPathItems.add(audioPath);
-                examListViewAdapter.notifyDataSetChanged();
             }
             if (examItems.size() == 0) {
                 Hsk hsk = new Hsk();
@@ -195,6 +173,7 @@ public class ExamFragment extends Fragment {
                 examItems.add(hsk);
             }
             examListViewAdapter.notifyDataSetChanged();
+            pg.setVisibility(View.INVISIBLE);
         }
     };
 
@@ -205,14 +184,57 @@ public class ExamFragment extends Fragment {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             if (examItems.get(position).getIdhsk().equals("当前资源没有搜集到哦")) return;
-            Intent intent = new Intent(getActivity(), SubjectActivity.class);
-            intent.putExtra("subject", subjectPathItems.get(position));
-            intent.putExtra("answer", answerPathItems.get(position));
-            intent.putExtra("audio", audioPathItems.get(position));
-            intent.putExtra("name", examItems.get(position).getIdhsk());
-            startActivity(intent);
+            pg.setVisibility(View.VISIBLE);
+            pg.bringToFront();
+            Request.Builder builder = null;
+            builder = new Request.Builder().url(prefix + "exam/HSK/" + examItems.get(position).getIdhsk());
+            Call call = client.newCall(builder.build());
+            call.enqueue(examCallback);
+            index = position;
+        }
+    };
+    private Callback examCallback = new Callback() {
+        @Override
+        public void onFailure(@NonNull Call call, @NonNull IOException e) {
+
+        }
+
+        @Override
+        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+            Gson gson = new Gson();
+            JsonElement jsonElement = new JsonParser().parse(new String(response.body().bytes())).getAsJsonObject();
+            Hsk hsk = gson.fromJson(jsonElement, Hsk.class);
+            String subjectPath = getActivity().getExternalCacheDir().getAbsolutePath() + File.separator + hsk.getIdhsk() + "-question.json";
+            String answerPath = getActivity().getExternalCacheDir().getAbsolutePath() + File.separator + hsk.getIdhsk() + "-answer.json";
+            String audioPath = getActivity().getExternalCacheDir().getAbsolutePath() + File.separator + hsk.getIdhsk() + "-audio.mp3";
+            FileOutputStream fileOutputStream = null;
+            try {
+                fileOutputStream = new FileOutputStream(subjectPath);
+                fileOutputStream.write(Base64.decode(hsk.getContent(), Base64.DEFAULT));
+                fileOutputStream.close();
+                fileOutputStream = new FileOutputStream(answerPath);
+                fileOutputStream.write(Base64.decode(hsk.getAnswer(), Base64.DEFAULT));
+                fileOutputStream.close();
+                fileOutputStream = new FileOutputStream(audioPath);
+                fileOutputStream.write(Base64.decode(hsk.getAudio(), Base64.DEFAULT));
+                fileOutputStream.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            pg.setVisibility(View.INVISIBLE);
+            Navigation(subjectPath, answerPath, audioPath, index);
         }
     };
 
+    void Navigation(String s, String an, String au, int position) {
+        Intent intent = new Intent(getActivity(), SubjectActivity.class);
+        intent.putExtra("subject", s);
+        intent.putExtra("answer", an);
+        intent.putExtra("audio", au);
+        intent.putExtra("name", examItems.get(position).getIdhsk());
+        startActivity(intent);
+    }
 
 }

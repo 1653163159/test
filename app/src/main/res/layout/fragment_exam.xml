@@ -31,6 +31,16 @@
             android:background="@color/black" />
     </LinearLayout>
 
+    <ProgressBar
+        android:id="@+id/pg_bar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/a"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:visibility="invisible" />
+
     <ListView
         android:id="@+id/exam_list"
         android:layout_width="match_parent"
