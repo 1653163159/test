@@ -1,5 +1,6 @@
 package com.example.test.tools;
 
+import com.example.test.Practice.Flags;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -37,6 +38,40 @@ public class JsonUtil {
         jsonObject.addProperty("flag", flag);
 
         jsonArray.add(jsonObject);
+        FileOutputStream fileOutputStream = new FileOutputStream(path);
+        FileChannel fileChannel = fileOutputStream.getChannel();
+        FileLock fileLock = fileChannel.tryLock();
+        fileOutputStream.write(jsonArray.toString().getBytes(StandardCharsets.UTF_8));
+        fileLock.release();
+        fileOutputStream.close();
+    }
+
+    public void writeUserMsgState(String path, String jid, String flag) throws IOException {
+        String content = read(path);
+        JsonArray jsonArray;
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("jid", jid);
+        jsonObject.addProperty("flag", flag);
+        if (content == null) {
+            jsonArray = new JsonArray();
+            jsonArray.add(jsonObject);
+        } else {
+            jsonArray = new JsonParser().parse(content).getAsJsonArray();
+            int isSelect = -1;
+            for (int i = 0; i < jsonArray.size(); i++) {
+                String oJid = jsonArray.get(i).getAsJsonObject().get("jid").getAsString();
+                //System.out.println("存在用户的id为" + oJid);
+                if (oJid.equals(jid)) {
+                    isSelect = i;
+                }
+            }
+            if (isSelect == -1) {
+                jsonArray.add(jsonObject);
+            } else {
+                jsonArray.remove(isSelect);
+                jsonArray.add(jsonObject);
+            }
+        }
         FileOutputStream fileOutputStream = new FileOutputStream(path);
         FileChannel fileChannel = fileOutputStream.getChannel();
         FileLock fileLock = fileChannel.tryLock();

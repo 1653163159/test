@@ -26,9 +26,13 @@ import com.example.test.MainFragment.MineFragment;
 import com.example.test.MainFragment.PracticeFragment;
 import com.example.test.MainFragment.TalkFragment;
 import com.example.test.Adapter.SearchListViewAdapter;
+import com.example.test.Practice.Flags;
 import com.example.test.pojo.userInform;
 import com.example.test.tools.JsonUtil;
 import com.example.test.tools.SmarkUtil;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.StanzaListener;
@@ -65,6 +69,7 @@ public class MainActivity extends FragmentActivity {
     public String C_DOMAIN = "192.168.0.107";//服务器主机名
     public String USER_NAME = "hqx", USER_PWD = "123456";
     public SmarkUtil smarkUti;
+    JsonUtil jsonUtil;
 
     //搜索弹窗相关
     PopupWindow popupWindow;
@@ -90,7 +95,7 @@ public class MainActivity extends FragmentActivity {
         USER_PWD = getString(R.string.userPassword);
         C_HOST = getString(R.string.serverHost);
         C_DOMAIN = getString(R.string.serverDomain);
-
+        jsonUtil = new JsonUtil();
         //底部导航栏
         tvMain = findViewById(R.id.tv_main);
         tvMain.setSelected(true);
@@ -178,6 +183,7 @@ public class MainActivity extends FragmentActivity {
                 transaction.add(R.id.main_container, talkFragment);
             } else {
                 transaction.show(talkFragment);
+                talkFragment.refreshItems(smarkUti);
             }
         } else if (id == R.id.tv_mine) {
             if (mineFragment == null) {
@@ -451,7 +457,7 @@ public class MainActivity extends FragmentActivity {
                 if (username.getText().equals("") || userPwd.getText().equals("")) return;
                 USER_NAME = String.valueOf(username.getText()).trim();
                 USER_PWD = String.valueOf(userPwd.getText()).trim();
-                linkToOpenfire();
+                link.sendEmptyMessage(1);
                 mineFragment.afterLoginSet(USER_NAME);
                 System.out.println(USER_NAME + "-----" + USER_PWD);
             }
@@ -464,6 +470,13 @@ public class MainActivity extends FragmentActivity {
             }
         });
     }
+
+    Handler link = new Handler() {
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            linkToOpenfire();
+        }
+    };
 
     /**
      * 连接服务器,并更新控件
@@ -481,6 +494,7 @@ public class MainActivity extends FragmentActivity {
             } else {
                 Toast.makeText(MainActivity.this, "登录失败，请检查用户名和密码", Toast.LENGTH_SHORT).show();
             }
+
         } catch (Exception e) {
             System.out.println("Chat服务连接失败" + e.getLocalizedMessage());
             e.printStackTrace();
@@ -494,7 +508,6 @@ public class MainActivity extends FragmentActivity {
         @Override
         public void newIncomingMessage(EntityBareJid from, org.jivesoftware.smack.packet.Message message, Chat chat) {
             System.out.println("收到消息" + from + ":" + message.getBody());
-            JsonUtil jsonUtil = new JsonUtil();
             String path = getExternalCacheDir().getAbsolutePath() + File.separator + from + ".json";
             try {
                 jsonUtil.write(path, from.toString(), from.toString().split("@")[0], message.getBody(), "1");
@@ -511,11 +524,24 @@ public class MainActivity extends FragmentActivity {
         @Override
         public void handleMessage(@NonNull Message msg) {
             String res = msg.obj.toString();
-            System.out.println(res.split("&")[0]);
+            //System.out.println("jid:"+res.split("&")[0]);
             updateUserList(res.split("&")[0]);
+            Toast.makeText(getApplicationContext(), "收到来自" + res.split("&")[0].split("@")[0] + "的消息:\n    " + res.split("&")[1], Toast.LENGTH_LONG).show();
+            String StatePath = getExternalCacheDir().getAbsolutePath() + File.separator + "userState.json";
             if (talkFragment.isTalking && res.split("&")[0].equals(talkFragment.FriendJid)) {
                 talkFragment.msgItems.add("1" + res.split("@")[0] + ":\n      " + res.split("&")[1]);
                 talkFragment.msgListViewAdapter.notifyDataSetChanged();
+                try {
+                    jsonUtil.writeUserMsgState(StatePath, res.split("&")[0], Flags.isRead);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                try {
+                    jsonUtil.writeUserMsgState(StatePath, res.split("&")[0], Flags.notRead);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     };
@@ -542,7 +568,7 @@ public class MainActivity extends FragmentActivity {
     /**
      * 退出登录
      */
-    public void disconnectFromOpenfire() {
+    public void disconnectFromOpenfire() throws Exception {
         if (smarkUti != null) {
             smarkUti.close();
             mineFragment.afterLoginSet("");

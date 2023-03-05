@@ -26,6 +26,7 @@ import android.widget.TextView;
 
 import com.example.test.Adapter.MsgListViewAdapter;
 import com.example.test.Adapter.UserListViewAdapter;
+import com.example.test.Practice.Flags;
 import com.example.test.R;
 import com.example.test.pojo.UserMsg;
 import com.example.test.tools.JsonUtil;
@@ -33,6 +34,7 @@ import com.example.test.tools.SmarkUtil;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import org.jivesoftware.smack.packet.Presence;
@@ -166,7 +168,6 @@ public class TalkFragment extends Fragment {
                 }
             }
         }.start();
-
     }
 
     /**
@@ -201,7 +202,7 @@ public class TalkFragment extends Fragment {
     SwipeRefreshLayout.OnRefreshListener refreshListener = new SwipeRefreshLayout.OnRefreshListener() {
         @Override
         public void onRefresh() {
-            refreshHandler.sendEmptyMessageDelayed(1, 5);
+            refreshHandler.sendEmptyMessage(1);
         }
     };
     Handler refreshHandler = new Handler() {
@@ -230,6 +231,33 @@ public class TalkFragment extends Fragment {
         }
         userListViewAdapter.notifyDataSetChanged();
         userRefresh.setRefreshing(false);
+        try {
+            String content = jsonUtil.read(curActivity.getExternalCacheDir().getAbsolutePath() + File.separator + "userState.json");
+            if (content != null) {
+                JsonArray jsonArray = new JsonParser().parse(content).getAsJsonArray();
+                for (JsonElement element : jsonArray) {
+                    String oJid = element.getAsJsonObject().get("jid").getAsString();
+                    String flag = element.getAsJsonObject().get("flag").getAsString();
+                    if (flag.equals(Flags.notRead)) {
+                        updateUserList(oJid);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void updateUserList(String msgFrom) {
+        int index = findItemByJid(msgFrom);
+        if (userList.getChildAt(index) == null) return;
+        TextView textView = userList.getChildAt(index).findViewById(R.id.item1);
+        if (textView == null) return;
+        Drawable drawable = curActivity.getDrawable(R.drawable.msg_tip);
+        drawable.setBounds(0, 0, 30, 30);
+        Drawable drawable2 = curActivity.getDrawable(R.drawable.arrow_right);
+        drawable2.setBounds(0, 0, 100, 100);
+        textView.setCompoundDrawables(drawable2, null, drawable, null);
     }
 
     /**
@@ -257,7 +285,10 @@ public class TalkFragment extends Fragment {
      * @throws IOException
      */
     public PopupWindow talkWindow;
+
     public void showTalkWindow(String friendName, String friendJid) throws IOException {
+        String StatePath = getActivity().getExternalCacheDir().getAbsolutePath() + File.separator + "userState.json";
+        jsonUtil.writeUserMsgState(StatePath, friendJid, Flags.isRead);
         View popView = LayoutInflater.from(getContext()).inflate(R.layout.activity_talk, null);
         Rect outSize = new Rect();
         getActivity().getWindowManager().getDefaultDisplay().getRectSize(outSize);

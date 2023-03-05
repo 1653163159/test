@@ -22,6 +22,7 @@ public class PracticeActivity extends AppCompatActivity {
     Fragment showFragment;
     TextView title;
     Button speak;
+    String titleName, type, prefix, level;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,9 +33,14 @@ public class PracticeActivity extends AppCompatActivity {
     }
 
     void initView() {
+        titleName = getIntent().getStringExtra("title");
+        type = getIntent().getStringExtra("type");
+        prefix = getIntent().getStringExtra("prefix");
+        level = getIntent().getStringExtra("level");
+
         speechUtil = new TextToSpeechUtil(getApplicationContext());
         title = findViewById(R.id.title_practice);
-        title.setText(getIntent().getStringExtra("title"));
+        title.setText(titleName);
         EditText editText = findViewById(R.id.copy_content);
         TextView pinyin = findViewById(R.id.pinyin);
         speak = findViewById(R.id.speak_copy_content);
@@ -50,19 +56,16 @@ public class PracticeActivity extends AppCompatActivity {
                 }
             }
         });
-
-        String type = getIntent().getStringExtra("type");
         switch (type) {
             case Flags.SPEAK_TYPE1:
-                showFragment = S3Fragment.newInstance(getIntent().getStringExtra("prefix"), null);
+                showFragment = S3Fragment.newInstance(prefix, null);
                 break;
             case Flags.WRITE_TYPE1:
                 break;
             case Flags.LISTEN_TYPE1:
-                showFragment = S1Fragment.newInstance(getIntent().getStringExtra("prefix"), null);
+                showFragment = S1Fragment.newInstance(prefix, null);
         }
         getSupportFragmentManager().beginTransaction().add(R.id.practice_container, showFragment).commit();
-
     }
 
     public void back(View view) {

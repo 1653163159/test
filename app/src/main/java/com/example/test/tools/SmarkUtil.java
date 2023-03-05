@@ -1,6 +1,7 @@
 package com.example.test.tools;
 
 import com.example.test.MainActivity;
+import com.example.test.Practice.Flags;
 import com.example.test.pojo.userInform;
 
 import java.io.File;
@@ -109,36 +110,6 @@ public class SmarkUtil {
             connection.connect();
             // 登录服务器
             connection.login();
-            if (connection.isAuthenticated()) {
-                // 允许自动连接
-                ReconnectionManager reconnectionManager = ReconnectionManager.getInstanceFor(connection);
-                // 重联间隔5秒
-                reconnectionManager.setFixedDelay(5);
-                reconnectionManager.enableAutomaticReconnection();//开启重联机制
-
-                // 维持ping
-                PingManager pingManager = PingManager.getInstanceFor(connection);
-                PingManager.setDefaultPingInterval(10);
-                // 监听连接状态
-                pingManager.registerPingFailedListener(new PingFailedListener() {
-                    @Override
-                    public void pingFailed() {
-                        try {
-                            connection.connect();
-                            connection.login();
-                        } catch (SmackException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        } catch (XMPPException e) {
-                            e.printStackTrace();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-
-            }
             System.out.println("连接成功");
         } catch (Exception e) {
             e.printStackTrace();
@@ -150,7 +121,8 @@ public class SmarkUtil {
      * 设置登录状态
      */
     public void setState(Presence presence) throws Exception {
-        connection.sendStanza(presence);
+        if (connection != null)
+            connection.sendStanza(presence);
     }
 
     /**
@@ -176,10 +148,12 @@ public class SmarkUtil {
         JsonUtil jsonUtil = new JsonUtil();
         for (Message message : messageList) {
             // 自己处理
-            System.out.println(message.getFrom() + ":" + message.getType() + ";" + message.getBody());
+            System.out.println("获得离线消息" + message.getFrom() + ":" + message.getType() + ";" + message.getBody());
             String from = message.getFrom().toString().split("/")[0];
             String storagePath = path + File.separator + from + ".json";
             jsonUtil.write(storagePath, from, from.split("@")[0], message.getBody(), "1");
+            String StatePath = path + File.separator + "userState.json";
+            jsonUtil.writeUserMsgState(StatePath, from.toString(), Flags.notRead);
         }
         //获取后删除离线消息记录
         offlineManager.deleteMessages();
@@ -741,6 +715,7 @@ public class SmarkUtil {
      * 判断是否连接
      */
     public boolean isConnected() {
+        if (connection == null) return false;
         return connection.isConnected();
     }
 
@@ -748,6 +723,7 @@ public class SmarkUtil {
      * 重新连接
      */
     public void reConnect() throws Exception {
+        if (connection == null) return;
         connection.connect();
     }
 
@@ -755,6 +731,7 @@ public class SmarkUtil {
      * 重新登录
      */
     public void reLogin() throws Exception {
+        if (connection == null) return;
         connection.login();
     }
 
@@ -781,13 +758,17 @@ public class SmarkUtil {
      * 判断是否登录
      */
     public boolean isLogin() {
+        if (connection == null) return false;
         return connection.isAuthenticated();
     }
 
     /**
      * 断开连接
      */
-    public void close() {
+    public void close() throws Exception {
+        Presence presence = new Presence(Presence.Type.unavailable);
+        connection.sendStanza(presence);
         connection.disconnect();
+        connection = null;
     }
 }

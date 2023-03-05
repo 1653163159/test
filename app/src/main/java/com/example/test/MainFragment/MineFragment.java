@@ -95,7 +95,11 @@ public class MineFragment extends Fragment {
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MainActivity) getActivity()).disconnectFromOpenfire();
+                try {
+                    ((MainActivity) getActivity()).disconnectFromOpenfire();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
         TextView jsonTest = view.findViewById(R.id.json);

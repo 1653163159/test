@@ -28,4 +28,7 @@ public class Flags {
     public final static String BEGINNER = "beginner";
     public final static String INTERMEDIATE = "intermediate";
     public final static String ADVANCED = "advanced";
+
+    public final static String isRead = "yes";
+    public final static String notRead = "no";
 }
