@@ -2,11 +2,13 @@ package com.example.test.Practice;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.test.Exam.S1Fragment;
@@ -17,12 +19,14 @@ import com.example.test.tools.TextToSpeechUtil;
 
 import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
 
-public class PracticeActivity extends AppCompatActivity {
+public class PracticeActivity extends FragmentActivity {
     TextToSpeechUtil speechUtil;
     Fragment showFragment;
     TextView title;
     Button speak;
     String titleName, type, prefix, level;
+    TextView sub_position;
+    ImageView subject_submit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +45,8 @@ public class PracticeActivity extends AppCompatActivity {
         speechUtil = new TextToSpeechUtil(getApplicationContext());
         title = findViewById(R.id.title_practice);
         title.setText(titleName);
+        sub_position = findViewById(R.id.practice_position);
+        subject_submit = findViewById(R.id.practice_submit);
         EditText editText = findViewById(R.id.copy_content);
         TextView pinyin = findViewById(R.id.pinyin);
         speak = findViewById(R.id.speak_copy_content);
@@ -58,14 +64,22 @@ public class PracticeActivity extends AppCompatActivity {
         });
         switch (type) {
             case Flags.SPEAK_TYPE1:
-                showFragment = S3Fragment.newInstance(prefix, null);
+                showFragment = S3Fragment.newInstance(prefix, level);
                 break;
             case Flags.WRITE_TYPE1:
                 break;
+            case Flags.WRITE_TYPE3:
+                showFragment = QuizFragment.newInstance(prefix, level);
+                break;
             case Flags.LISTEN_TYPE1:
-                showFragment = S1Fragment.newInstance(prefix, null);
+                showFragment = S1Fragment.newInstance(prefix, level);
+                break;
         }
         getSupportFragmentManager().beginTransaction().add(R.id.practice_container, showFragment).commit();
+    }
+
+    public void setSub_position(String text) {
+        sub_position.setText(text);
     }
 
     public void back(View view) {

@@ -90,6 +90,8 @@ public class MainActivity extends FragmentActivity {
 
     //初始化页面相关组件
     void initView() {
+        prefix = Flags.PREFIX;
+
         //openfire相关
         USER_NAME = getString(R.string.userName);
         USER_PWD = getString(R.string.userPassword);

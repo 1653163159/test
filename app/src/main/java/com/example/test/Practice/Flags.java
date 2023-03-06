@@ -31,4 +31,12 @@ public class Flags {
 
     public final static String isRead = "yes";
     public final static String notRead = "no";
+
+    //URL相关
+    public final static String PREFIX = "http://10.27.199.250:8080/rest/";
+    public final static String COMPOSITION_URL = "composition";//无参数
+    public final static String STACK_URL = "getBookNameByLevel/";//参数：level;position(可选)
+    public final static String STACK_BOOK_URL = "getChapterList/";//参数：bookName
+    public final static String WORD_URL = "getWordList/";//参数：level;position(可选)
+    public final static String QUIZ_URL = "getQuizByLevel/";//参数：level;position(可选)
 }

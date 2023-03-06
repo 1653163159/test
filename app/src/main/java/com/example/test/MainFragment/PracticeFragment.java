@@ -189,12 +189,35 @@ public class PracticeFragment extends Fragment {
         }
     };
 
+    /**
+     * 等级文本变换
+     *
+     * @param text
+     * @return
+     */
+    private String getLevel(String text) {
+        String level = "";
+        switch (text) {
+            case "低级":
+                level = Flags.BEGINNER;
+                break;
+            case "中级":
+                level = Flags.INTERMEDIATE;
+                break;
+            case "高级":
+                level = Flags.ADVANCED;
+                break;
+        }
+        return level;
+    }
+
+
     private void navigation(String title, String type) {
         Intent intent = new Intent(getActivity(), PracticeActivity.class);
         intent.putExtra("title", title);
         intent.putExtra("type", type);
         intent.putExtra("prefix", prefix);
-        intent.putExtra("level", level);
+        intent.putExtra("level", getLevel(level));
         startActivity(intent);
     }
 }

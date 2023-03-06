@@ -17,9 +17,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
+            android:layout_marginStart="15dp"
+            android:layout_toEndOf="@+id/practice_back"
             android:text="练习"
             android:textColor="@color/black"
-            android:textSize="18sp" />
+            android:textSize="16sp" />
 
         <ImageView
             android:id="@+id/practice_back"
@@ -31,6 +33,25 @@
             android:onClick="back"
             android:src="@drawable/ic_baseline_keyboard_backspace_24" />
 
+        <TextView
+            android:id="@+id/practice_position"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="5dp"
+            android:layout_toStartOf="@+id/practice_submit"
+            android:gravity="center"
+            android:text="1/1"
+            android:textSize="17sp" />
+
+        <ImageView
+            android:id="@+id/practice_submit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/check_circle" />
     </RelativeLayout>
 
     <LinearLayout
@@ -70,6 +91,6 @@
     <FrameLayout
         android:id="@+id/practice_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_below="@id/content_search" />
 </RelativeLayout>
