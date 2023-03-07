@@ -79,7 +79,12 @@ public class SubjectListViewAdapter extends BaseAdapter {
             viewHolder1.group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(RadioGroup group, int checkedId) {
+                    for (int i = 0; i < viewHolder1.group.getChildCount(); i++) {
+                        RadioButton button = (RadioButton) viewHolder1.group.getChildAt(i);
+                        button.setButtonDrawable(R.drawable.check_circle_default);
+                    }
                     RadioButton button = finalConvertView.findViewById(viewHolder1.group.getCheckedRadioButtonId());
+                    button.setButtonDrawable(R.drawable.check_circle);
                     int index = viewHolder1.group.indexOfChild(button);
                     int lo = Integer.valueOf(items.get(position).getNumber());
                     answersAlphabet[lo] = new SubjectAnswer(items.get(position).getNumber(), intToAlphabet(index + 1));
@@ -98,6 +103,7 @@ public class SubjectListViewAdapter extends BaseAdapter {
             viewHolder1.c.setText(items.get(position).getOptionC());
             viewHolder1.d.setText(items.get(position).getOptionD());
             int lo = Integer.valueOf(items.get(position).getNumber());
+            //listview会自动刷新控件，所以需要重现答题结果
             if (answersAlphabet[lo] != null) {
                 int index = alphabetToInt(answersAlphabet[lo].getAnswer()) - 1;
                 RadioButton button = (RadioButton) viewHolder1.group.getChildAt(index);
@@ -127,7 +133,12 @@ public class SubjectListViewAdapter extends BaseAdapter {
             viewHolder3.group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(RadioGroup group, int checkedId) {
+                    for (int i = 0; i < viewHolder3.group.getChildCount(); i++) {
+                        RadioButton button = (RadioButton) viewHolder3.group.getChildAt(i);
+                        button.setButtonDrawable(R.drawable.check_circle_default);
+                    }
                     RadioButton button = finalConvertView1.findViewById(viewHolder3.group.getCheckedRadioButtonId());
+                    button.setButtonDrawable(R.drawable.check_circle);
                     int index = viewHolder3.group.indexOfChild(button);
                     int lo = Integer.valueOf(items.get(position).getNumber());
                     answersAlphabet[lo] = new SubjectAnswer(items.get(position).getNumber(), intToAlphabet(index + 1));

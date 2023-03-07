@@ -13,8 +13,10 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Size;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -108,17 +110,37 @@ public class QuizFragment extends Fragment {
 
         initView();
         getQuizList(level, position);
+        refreshLayout.setRefreshing(true);
         return quizFragment;
     }
 
     void initView() {
         refreshLayout = quizFragment.findViewById(R.id.quiz_refresh);
         refreshLayout.setOnRefreshListener(refreshListener);
+        refreshLayout.setColorSchemeResources(R.color.colorYang, R.color.aliceBlue);
         quizViewPage = quizFragment.findViewById(R.id.quiz_list);
         quizViewList = new ArrayList<>();
         quizList = new ArrayList<>();
-        quizViewPage.setAdapter(pageAdapter = new QuizViewPageAdapter(quizViewList, quizList));
+        quizViewPage.setAdapter(pageAdapter = new QuizViewPageAdapter(quizViewList));
         quizViewPage.setOnPageChangeListener(changeListener);
+        quizViewPage.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    System.out.println(event.getRawX());
+                    WindowManager wm = (WindowManager) curActivity.getSystemService(getContext().WINDOW_SERVICE);
+                    int width = wm.getDefaultDisplay().getWidth();
+                    int temp = width / 3;
+                    if (event.getRawX() > width / 2 + temp) {
+                        quizViewPage.setCurrentItem(quizViewPage.getCurrentItem() + 1);
+                    }
+                    if (event.getRawX() < width / 2 - temp) {
+                        quizViewPage.setCurrentItem(quizViewPage.getCurrentItem() - 1);
+                    }
+                }
+                return false;
+            }
+        });
     }
 
     private void getQuizList(String level, int position) {
@@ -176,7 +198,7 @@ public class QuizFragment extends Fragment {
     private void addView(Quiz quiz, int i) {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.quiz_list, null);
         TextView textView = view.findViewById(R.id.quiz_title);
-        textView.setText((i + 1) + "." + quiz.getContent());
+        textView.setText((position / 10 * 10 + i + 1) + "." + quiz.getContent());
         RadioGroup group = view.findViewById(R.id.quiz_group);
         if (!quiz.getOptiona().equals("")) {
             RadioButton button = new RadioButton(getContext());
@@ -184,6 +206,7 @@ public class QuizFragment extends Fragment {
             button.setText(quiz.getOptiona());
             button.setTextSize(12);
             button.setPadding(5, 5, 5, 5);
+            button.setButtonDrawable(R.drawable.check_circle_default);
             group.addView(button);
         }
         if (!quiz.getOptionb().equals("")) {
@@ -192,6 +215,7 @@ public class QuizFragment extends Fragment {
             button.setText(quiz.getOptionb());
             button.setTextSize(12);
             button.setPadding(5, 5, 5, 5);
+            button.setButtonDrawable(R.drawable.check_circle_default);
             group.addView(button);
         }
         if (!quiz.getOptionc().equals("")) {
@@ -200,6 +224,7 @@ public class QuizFragment extends Fragment {
             button.setText(quiz.getOptionc());
             button.setTextSize(12);
             button.setPadding(5, 5, 5, 5);
+            button.setButtonDrawable(R.drawable.check_circle_default);
             group.addView(button);
         }
         if (!quiz.getOptiond().equals("")) {
@@ -208,6 +233,7 @@ public class QuizFragment extends Fragment {
             button.setLayoutParams(new RadioGroup.LayoutParams(RadioGroup.LayoutParams.MATCH_PARENT, RadioGroup.LayoutParams.WRAP_CONTENT));
             button.setTextSize(12);
             button.setPadding(5, 5, 5, 5);
+            button.setButtonDrawable(R.drawable.check_circle_default);
             group.addView(button);
         }
         TextView answer = view.findViewById(R.id.quiz_answer);
@@ -217,9 +243,9 @@ public class QuizFragment extends Fragment {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 RadioButton button = view.findViewById(checkedId);
                 if (button.getText().equals(quiz.getAnswer())) {
-                    button.setBackgroundColor(Color.RED);
+                    button.setButtonDrawable(R.drawable.check_circle_right);
                 } else {
-                    button.setBackgroundColor(Color.GREEN);
+                    button.setButtonDrawable(R.drawable.check_circle__wrong);
                 }
                 for (int i = 0; i < group.getChildCount(); i++) {
                     group.getChildAt(i).setEnabled(false);
@@ -247,20 +273,7 @@ public class QuizFragment extends Fragment {
     SwipeRefreshLayout.OnRefreshListener refreshListener = new SwipeRefreshLayout.OnRefreshListener() {
         @Override
         public void onRefresh() {
-            int count = 21;
-            switch (level) {
-                case Flags.BEGINNER:
-                    count = Flags.QUIZ_BEGINNER_COUNT;
-                    break;
-                case Flags.INTERMEDIATE:
-                    count = Flags.QUIZ_INTERMEDIATE_COUNT;
-                    break;
-                case Flags.ADVANCED:
-                    count = Flags.QUIZ_ADVANCED_COUNT;
-                    break;
-            }
-            if (position < count - 10) position += 10;
-            getQuizList(level, position);
+            refresh();
         }
     };
 
@@ -280,9 +293,42 @@ public class QuizFragment extends Fragment {
 
         @Override
         public void onPageScrollStateChanged(int state) {
-
+            if (state == 1) {
+                if (quizViewPage.getCurrentItem() == quizList.size() - 1) {
+                    refresh();
+                    refreshLayout.setRefreshing(true);
+                }
+            }
         }
     };
+
+    private void refresh() {
+        int count = getMaxCount(level);
+        if (position < count - 10) position += 10;
+        getQuizList(level, position);
+    }
+
+    /**
+     * 根据难度等级获取对应级别的数据总量
+     *
+     * @param level
+     * @return
+     */
+    public int getMaxCount(String level) {
+        int count = 0;
+        switch (level) {
+            case Flags.BEGINNER:
+                count = Flags.QUIZ_BEGINNER_COUNT;
+                break;
+            case Flags.INTERMEDIATE:
+                count = Flags.QUIZ_INTERMEDIATE_COUNT;
+                break;
+            case Flags.ADVANCED:
+                count = Flags.QUIZ_ADVANCED_COUNT;
+                break;
+        }
+        return count;
+    }
 
     /**
      * 重置Fragment参数

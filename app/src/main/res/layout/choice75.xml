@@ -30,6 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginBottom="10dp"
+            android:button="@drawable/check_circle_default"
             android:text="A" />
 
         <RadioButton
@@ -38,6 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginBottom="10dp"
+            android:button="@drawable/check_circle_default"
             android:text="B" />
 
         <RadioButton
@@ -46,6 +48,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginBottom="10dp"
+            android:button="@drawable/check_circle_default"
             android:text="C" />
 
         <RadioButton
@@ -54,6 +57,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginBottom="10dp"
+            android:button="@drawable/check_circle_default"
             android:text="D" />
 
         <RadioButton
@@ -62,6 +66,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginBottom="10dp"
+            android:button="@drawable/check_circle_default"
             android:text="E" />
     </RadioGroup>
 </RelativeLayout>

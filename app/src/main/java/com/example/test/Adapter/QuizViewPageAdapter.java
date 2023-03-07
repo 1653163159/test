@@ -17,11 +17,9 @@ import java.util.List;
  */
 public class QuizViewPageAdapter extends PagerAdapter {
     List<View> viewList;
-    List<Quiz> quizList;
 
-    public QuizViewPageAdapter(List<View> viewList, List<Quiz> quizList) {
+    public QuizViewPageAdapter(List<View> viewList) {
         this.viewList = viewList;
-        this.quizList = quizList;
     }
 
     @Override
@@ -44,6 +42,11 @@ public class QuizViewPageAdapter extends PagerAdapter {
 
     @Override
     public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
-        container.removeView(viewList.get(position));
+        container.removeView((View) object);
+    }
+
+    @Override
+    public int getItemPosition(@NonNull Object object) {
+        return POSITION_NONE;
     }
 }

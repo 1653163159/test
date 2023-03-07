@@ -14,7 +14,7 @@
         android:layout_marginBottom="10dp"
         android:background="@drawable/btn_shape"
         android:gravity="center"
-        android:text="阅读练习"
+        android:text="单词练习"
         android:textColor="@color/black"
         android:textSize="18sp" />
 

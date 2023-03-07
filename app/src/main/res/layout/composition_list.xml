@@ -5,30 +5,21 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/quiz_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_margin="10dp"
-        android:gravity="left"
-        android:textIsSelectable="true"
-        android:text="hello"
-        android:textColor="@color/black"
-        android:textSize="14sp" />
-
-    <RadioGroup
-        android:id="@+id/quiz_group"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp" />
+        android:text="用户自行练习即可"
+        android:textSize="12sp" />
 
     <TextView
-        android:id="@+id/quiz_answer"
+        android:id="@+id/composition_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:textIsSelectable="true"
+        android:scrollbars="vertical"
+        android:text="hello"
         android:textColor="@color/black"
-        android:textSize="14sp"
-        android:visibility="invisible" />
+        android:textIsSelectable="true"
+        android:textSize="14sp" />
 </LinearLayout>

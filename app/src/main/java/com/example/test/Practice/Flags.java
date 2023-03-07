@@ -34,7 +34,7 @@ public class Flags {
 
     //URL相关
     public final static String PREFIX = "http://10.27.199.250:8080/rest/";
-    public final static String COMPOSITION_URL = "composition";//无参数
+    public final static String COMPOSITION_URL = "composition/";//参数：level(可选);position(可选)
     public final static String STACK_URL = "getBookNameByLevel/";//参数：level;position(可选)
     public final static String STACK_BOOK_URL = "getChapterList/";//参数：bookName
     public final static String WORD_URL = "getWordList/";//参数：level;position(可选)

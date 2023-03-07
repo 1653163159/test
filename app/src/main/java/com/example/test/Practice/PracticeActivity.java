@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.test.Exam.S1Fragment;
+import com.example.test.Exam.S2Fragment;
 import com.example.test.Exam.S3Fragment;
 import com.example.test.R;
 import com.example.test.tools.HanZiToPinYin;
@@ -67,9 +68,13 @@ public class PracticeActivity extends FragmentActivity {
                 showFragment = S3Fragment.newInstance(prefix, level);
                 break;
             case Flags.WRITE_TYPE1:
+                showFragment = S2Fragment.newInstance(prefix, level);
                 break;
             case Flags.WRITE_TYPE3:
                 showFragment = QuizFragment.newInstance(prefix, level);
+                break;
+            case Flags.WRITE_TYPE2:
+                showFragment = CompositionFragment.newInstance(prefix, level);
                 break;
             case Flags.LISTEN_TYPE1:
                 showFragment = S1Fragment.newInstance(prefix, level);

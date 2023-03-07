@@ -55,7 +55,6 @@ public class S2Fragment extends Fragment {
      * 服务器请求设置
      * */
     private final OkHttpClient client = new OkHttpClient();
-    String prefix = "http://192.168.2.6:8080/rest/";
     String requestType;//向服务器请求数据的类型
 
     public void setRequestType(String requestType) {
@@ -94,8 +93,8 @@ public class S2Fragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private String prefix;
+    private String level;
 
     public S2Fragment() {
         // Required empty public constructor
@@ -124,7 +123,7 @@ public class S2Fragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             prefix = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            level = getArguments().getString(ARG_PARAM2);
         }
     }
 
@@ -193,8 +192,6 @@ public class S2Fragment extends Fragment {
         byte[] bytes = Base64.decode(p1.getPicture_content(), Base64.DEFAULT);
         resourceGetPath = curActivity.getExternalCacheDir().getAbsolutePath() + File.separator + p1.getPicture_name() + ".jpg";
         FileOutputStream fileOutputStream = new FileOutputStream(resourceGetPath);
-        Log.e("TAG", "getAudioResource: " + bytes);
-        Log.e("TAG", "getAudioResource: " + resourceGetPath);
         fileOutputStream.write(bytes);
         fileOutputStream.close();
         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length - 1);
@@ -229,7 +226,7 @@ public class S2Fragment extends Fragment {
                 e.printStackTrace();
             }
             //初始化ORC访问许可
-            OCR.getInstance(curActivity.getApplicationContext()).initAccessToken(new OnResultListener<AccessToken>() {
+            OCR.getInstance(curActivity.getApplicationContext()).initAccessTokenWithAkSk(new OnResultListener<AccessToken>() {
                 @Override
                 public void onResult(AccessToken result) {
                     // 调用成功，返回AccessToken对象
@@ -240,7 +237,7 @@ public class S2Fragment extends Fragment {
                 public void onError(OCRError error) {
                     // 调用失败，返回OCRError子类SDKError对象
                 }
-            }, curActivity.getApplicationContext());
+            }, curActivity.getApplicationContext(), "xdMF0dc8gUpM4Epenwvn0rZS", "a8maYi1Q70MZxRCTX3nKzX4DEhbG56Zm");
             GeneralBasicParams param = new GeneralBasicParams();
             param.setDetectDirection(true);
             param.setImageFile(new File(answerSavePath));
@@ -284,6 +281,7 @@ public class S2Fragment extends Fragment {
             Toast.makeText(curActivity.getApplicationContext(), answerPictureToSting, Toast.LENGTH_LONG).show();
         }
     };
+
     public void onDestroy() {
         super.onDestroy();
         paintView.clear();
