@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.baidu.aip.asrwakeup3.core.mini.AutoCheck;
@@ -70,8 +71,10 @@ public class S3Fragment extends Fragment {
     private TextView title, content;
     Button record;
     private String answer;
+    ProgressBar bar;
 
     private void initView() {
+        bar = curLayout.findViewById(R.id.pg_word_record_bar);
         title = curLayout.findViewById(R.id.speech_title);
         title.setText("行宫\n" +
                 "元稹 〔唐代〕\n" +
@@ -248,6 +251,7 @@ public class S3Fragment extends Fragment {
                     } else {//不包含
                         content.setText(asRresponse.getBest_result().trim());
                     }
+                    bar.setVisibility(View.INVISIBLE);
                 }
             }
         }
@@ -256,6 +260,8 @@ public class S3Fragment extends Fragment {
     private View.OnClickListener recordListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            bar.setVisibility(View.VISIBLE);
+            bar.bringToFront();
             String json = "{\"accept-audio-data\":false,\"disable-punctuation\":false,\"accept-audio-volume\":true,\"pid\":1736}";
             start();
         }

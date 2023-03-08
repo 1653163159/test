@@ -225,23 +225,28 @@ public class S2Fragment extends Fragment {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            String ak = "xdMF0dc8gUpM4Epenwvn0rZS";
+            String sk = "SoVzlkXOIGaLWIPBvMvQiHUF370sQBqG";
+            String t = "24.0829db384e2a8427ac31ee52174cd4cd.2592000.1680763335.282335-29786756";
             //初始化ORC访问许可
-            OCR.getInstance(curActivity.getApplicationContext()).initAccessTokenWithAkSk(new OnResultListener<AccessToken>() {
+            OCR.getInstance(curActivity.getApplicationContext()).initAccessToken(new OnResultListener<AccessToken>() {
                 @Override
                 public void onResult(AccessToken result) {
                     // 调用成功，返回AccessToken对象
                     String token = result.getAccessToken();
+                    System.out.println("token:" + token);
                 }
 
                 @Override
                 public void onError(OCRError error) {
                     // 调用失败，返回OCRError子类SDKError对象
+                    error.printStackTrace();
                 }
-            }, curActivity.getApplicationContext(), "xdMF0dc8gUpM4Epenwvn0rZS", "a8maYi1Q70MZxRCTX3nKzX4DEhbG56Zm");
+            }, "aip-ocr.license", curActivity.getApplicationContext());
+            System.out.println(ak + "\n" + sk);
             GeneralBasicParams param = new GeneralBasicParams();
             param.setDetectDirection(true);
             param.setImageFile(new File(answerSavePath));
-            Log.e("TAG", "recWords: " + answerSavePath);
             StringBuilder sb = new StringBuilder();
             // 调用通用文字识别服务
             OCR.getInstance(curActivity.getApplicationContext()).recognizeAccurateBasic(param, new OnResultListener<GeneralResult>() {
@@ -261,7 +266,7 @@ public class S2Fragment extends Fragment {
 
                 @Override
                 public void onError(OCRError ocrError) {
-                    Log.e("error", "onError: ");
+                    ocrError.printStackTrace();
                 }
             });
         }
@@ -274,7 +279,6 @@ public class S2Fragment extends Fragment {
         @Override
         public void handleMessage(@NonNull Message msg) {
             answerPictureToSting = msg.obj.toString();
-            Log.e("Handler", "onClick: " + answerPictureToSting);
             if (!answerPictureToSting.equals("")) {
                 title.setText(answerPictureToSting);
             }

@@ -68,7 +68,7 @@ public class PracticeActivity extends FragmentActivity {
                 showFragment = S3Fragment.newInstance(prefix, level);
                 break;
             case Flags.WRITE_TYPE1:
-                showFragment = S2Fragment.newInstance(prefix, level);
+                showFragment = WordsWriteFragment.newInstance(prefix, level);
                 break;
             case Flags.WRITE_TYPE3:
                 showFragment = QuizFragment.newInstance(prefix, level);

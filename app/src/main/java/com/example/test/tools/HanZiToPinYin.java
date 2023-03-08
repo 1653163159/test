@@ -36,8 +36,8 @@ public class HanZiToPinYin {
         } else {
             hanYuPinOutputFormat.setCaseType(HanyuPinyinCaseType.UPPERCASE);
         }
-        hanYuPinOutputFormat.setToneType(HanyuPinyinToneType.WITHOUT_TONE);
-        hanYuPinOutputFormat.setVCharType(HanyuPinyinVCharType.WITH_V);
+        hanYuPinOutputFormat.setToneType(HanyuPinyinToneType.WITH_TONE_NUMBER);
+        hanYuPinOutputFormat.setVCharType(HanyuPinyinVCharType.WITH_U_UNICODE);
 
         StringBuffer pyStringBuffer = new StringBuffer();
         String[] strString = new String[strChar.length];

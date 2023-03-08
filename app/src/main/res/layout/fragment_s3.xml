@@ -1,38 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".Exam.S3Fragment">
+
+    <ProgressBar
+        android:id="@+id/pg_word_record_bar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="50dp"
+        android:visibility="invisible" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
         <!-- TODO: Update blank fragment layout -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="可以试着录音哦"
+            android:textColor="@color/black"
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/speech_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:layout_weight="1"
             android:background="@drawable/handwriting_border"
             android:gravity="center"
             android:text="请读出以下文字"
             android:textIsSelectable="true"
-            android:textSize="20dp" />
+            android:textSize="15sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="识别结果为"
+            android:textColor="@color/black"
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/speech_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:layout_weight="10"
+            android:background="@drawable/handwriting_border"
             android:gravity="center"
             android:text="请读出以下文字"
             android:textIsSelectable="true"
-            android:textSize="20dp" />
+            android:textSize="15dp" />
 
         <Button
             android:id="@+id/audio_record"
@@ -40,7 +64,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="20dp"
-            android:layout_weight="0.5"
             android:text="点击录音" />
     </LinearLayout>
-</FrameLayout>
+</RelativeLayout>

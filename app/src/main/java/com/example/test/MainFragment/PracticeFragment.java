@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.ClipboardManager;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -129,18 +130,28 @@ public class PracticeFragment extends Fragment {
 
     void initLisView() {
         Lone = listen_view.findViewById(R.id.listen_type1);
+        Typeface typeface = Typeface.createFromAsset(curActivity.getAssets(), "fonts/标准隶书体简.TTF");
+        Lone.setTypeface(typeface);
         Ltwo = listen_view.findViewById(R.id.listen_type2);
+        Ltwo.setTypeface(typeface);
         Lone.setOnClickListener(l1);
         Ltwo.setOnClickListener(l2);
 
         Sone = speak_view.findViewById(R.id.speak_type1);
+        Typeface typeface2 = Typeface.createFromAsset(curActivity.getAssets(), "fonts/标准仿宋体简.ttf");
+        Sone.setTypeface(typeface2);
         Stwo = speak_view.findViewById(R.id.speak_type2);
+        Stwo.setTypeface(typeface2);
         Sone.setOnClickListener(s1);
         Stwo.setOnClickListener(s2);
 
         Wone = write_view.findViewById(R.id.write_type1);
+        Typeface typeface3 = Typeface.createFromAsset(curActivity.getAssets(), "fonts/标准楷体简.ttf");
+        Wone.setTypeface(typeface3);
         Wtwo = write_view.findViewById(R.id.write_type2);
+        Wtwo.setTypeface(typeface3);
         Wthree = write_view.findViewById(R.id.write_type3);
+        Wthree.setTypeface(typeface3);
         Wone.setOnClickListener(w1);
         Wtwo.setOnClickListener(w2);
         Wthree.setOnClickListener(w3);
