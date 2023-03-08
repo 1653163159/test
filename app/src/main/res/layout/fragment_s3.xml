@@ -24,7 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:text="可以试着录音哦"
+            android:text="可以试着录音哦\n tip：点击可以听发音"
             android:textColor="@color/black"
             android:textSize="12sp" />
 
@@ -37,7 +37,7 @@
             android:gravity="center"
             android:text="请读出以下文字"
             android:textIsSelectable="true"
-            android:textSize="15sp" />
+            android:textSize="20sp" />
 
         <TextView
             android:layout_width="match_parent"
@@ -56,7 +56,7 @@
             android:gravity="center"
             android:text="请读出以下文字"
             android:textIsSelectable="true"
-            android:textSize="15dp" />
+            android:textSize="20sp" />
 
         <Button
             android:id="@+id/audio_record"

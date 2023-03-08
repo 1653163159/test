@@ -65,7 +65,7 @@ public class PracticeActivity extends FragmentActivity {
         });
         switch (type) {
             case Flags.SPEAK_TYPE1:
-                showFragment = S3Fragment.newInstance(prefix, level);
+                showFragment = WordSpeechFragment.newInstance(prefix, level);
                 break;
             case Flags.WRITE_TYPE1:
                 showFragment = WordsWriteFragment.newInstance(prefix, level);
