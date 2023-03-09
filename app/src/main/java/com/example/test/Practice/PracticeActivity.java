@@ -81,10 +81,10 @@ public class PracticeActivity extends FragmentActivity {
                 showFragment = CompositionFragment.newInstance(prefix, level);
                 break;
             case Flags.LISTEN_TYPE1:
-                showFragment = ListenFragment.newInstance(prefix, level);
+                showFragment = S1Fragment.newInstance(prefix, level);
                 break;
             case Flags.LISTEN_TYPE2:
-                showFragment = S1Fragment.newInstance(prefix, level);
+                showFragment = ListenFragment.newInstance(prefix, level);
                 break;
         }
         getSupportFragmentManager().beginTransaction().add(R.id.practice_container, showFragment).commit();
@@ -98,9 +98,6 @@ public class PracticeActivity extends FragmentActivity {
                 case Flags.SPEAK_TYPE1:
                     ((WordSpeechFragment) showFragment).startX = startX;
                     break;
-                case Flags.SPEAK_TYPE2:
-                    ((CompositionFragment) showFragment).startX = startX;
-                    break;
                 case Flags.WRITE_TYPE1:
                     ((WordsWriteFragment) showFragment).startX = startX;
                     break;
@@ -111,7 +108,7 @@ public class PracticeActivity extends FragmentActivity {
                     ((CompositionFragment) showFragment).startX = startX;
                     break;
             }
-            System.out.println("startX:" + startX);
+//            System.out.println("startX:" + startX);
         }
         return super.dispatchTouchEvent(ev);
     }

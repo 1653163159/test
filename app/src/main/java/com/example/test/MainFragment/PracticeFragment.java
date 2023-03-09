@@ -136,6 +136,13 @@ public class PracticeFragment extends Fragment {
         Ltwo = listen_view.findViewById(R.id.listen_type2);
         Ltwo.setTypeface(typeface);
         Lone.setOnClickListener(l1);
+        Lone.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                navigation(Lone.getText().toString(), Flags.LISTEN_TYPE1);
+                return false;
+            }
+        });
         Ltwo.setOnClickListener(l2);
 
         Sone = speak_view.findViewById(R.id.speak_type1);

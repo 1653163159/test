@@ -1,12 +1,17 @@
 package com.example.test.Practice;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.test.R;
 
@@ -16,7 +21,7 @@ import com.example.test.R;
  * create an instance of this fragment.
  */
 public class SpeechMaterialFragment extends Fragment {
-
+    View curLayout;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -61,6 +66,34 @@ public class SpeechMaterialFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_speech_meteria, container, false);
+        curLayout = inflater.inflate(R.layout.fragment_speech_meteria, container, false);
+        TextView textView = curLayout.findViewById(R.id.speech_material);
+        ListView listView = curLayout.findViewById(R.id.speech_chapter_list);
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (listView.getVisibility() == View.VISIBLE) {
+                    listView.setVisibility(View.INVISIBLE);
+                } else {
+                    startAnimation(listView);
+                }
+            }
+        });
+        return curLayout;
     }
+
+    private void startAnimation(ListView view) {
+        Handler handler = new Handler();
+        view.setVisibility(View.GONE);
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                view.setVisibility(View.VISIBLE);
+                ValueAnimator anim = ObjectAnimator.ofFloat(view, "translationX", -500, 0);
+                anim.setDuration(200);
+                anim.start();
+            }
+        }, 0);
+    }
+
 }

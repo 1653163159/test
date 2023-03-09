@@ -1,14 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Practice.SpeechMaterialFragment">
 
+    <ImageView
+        android:id="@+id/speech_chapter_switch"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:background="@color/goldenrod"
+        android:src="@drawable/chapter_list"
+        android:text="目录"
+        android:textColor="@color/black"
+        android:textSize="12sp" />
+
+    <ListView
+        android:id="@+id/speech_chapter_list"
+        android:layout_width="100dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:background="@color/peru"
+        android:visibility="invisible" />
     <!-- TODO: Update blank fragment layout -->
     <TextView
+        android:id="@+id/speech_material"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_below="@id/speech_chapter_switch"
+        android:layout_marginTop="2dp"
+        android:gravity="center"
+        android:scrollbars="vertical"
+        android:text="NB"
+        android:textColor="@color/black"
+        android:textSize="18sp" />
 
-</LinearLayout>
+</RelativeLayout>

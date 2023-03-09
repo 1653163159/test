@@ -59,7 +59,7 @@ public class S1Fragment extends Fragment {
     /*
      * 题目相关组件
      * */
-    private int questionId = 1;                   //题目编号
+    private int questionId = 2;                   //题目编号
     private TextView questionContent;
     private RadioGroup radioGroup;
     private RadioButton btn1, btn2, btn3, btn4;

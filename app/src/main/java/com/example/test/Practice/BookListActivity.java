@@ -176,7 +176,7 @@ public class BookListActivity extends AppCompatActivity {
         GridView gridView = view.findViewById(R.id.book_list);
         BookListViewAdapter adapter;
         gridView.setAdapter(adapter = new BookListViewAdapter(this, list));
-        adapter.setParams(title, type, prefix, level);
+        adapter.setParams(title, type, prefix, level, refreshLayout);
         bookViewList.add(view);
     }
 

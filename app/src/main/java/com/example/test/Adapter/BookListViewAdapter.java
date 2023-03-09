@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,6 +17,8 @@ import com.example.test.Practice.PracticeActivity;
 import com.example.test.R;
 import com.example.test.pojo.Stack;
 import com.example.test.tools.MyTextView;
+
+import org.w3c.dom.Attr;
 
 import java.util.List;
 
@@ -29,6 +32,7 @@ public class BookListViewAdapter extends BaseAdapter {
     LayoutInflater inflater;
     Context context;
     String title, type, prefix, level;
+    ProgressBar bar;
 
     public BookListViewAdapter(Context context, List<Stack> list) {
         this.context = context;
@@ -36,11 +40,12 @@ public class BookListViewAdapter extends BaseAdapter {
         this.list = list;
     }
 
-    public void setParams(String title, String type, String prefix, String level) {
+    public void setParams(String title, String type, String prefix, String level, ProgressBar bar) {
         this.title = title;
         this.type = type;
         this.level = level;
         this.prefix = prefix;
+        this.bar = bar;
     }
 
     @Override
@@ -121,6 +126,8 @@ public class BookListViewAdapter extends BaseAdapter {
     }
 
     void click(String bookname) {
+        bar.setVisibility(View.VISIBLE);
+        bar.bringToFront();
         new Thread() {
             @Override
             public void run() {
@@ -129,6 +136,7 @@ public class BookListViewAdapter extends BaseAdapter {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                bar.setVisibility(View.INVISIBLE);
                 Intent intent = new Intent(context, PracticeActivity.class);
                 intent.putExtra("title", title);
                 intent.putExtra("type", type);
