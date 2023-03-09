@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -67,6 +68,9 @@ public class PracticeActivity extends FragmentActivity {
             case Flags.SPEAK_TYPE1:
                 showFragment = WordSpeechFragment.newInstance(prefix, level);
                 break;
+            case Flags.SPEAK_TYPE2:
+                showFragment = SpeechMaterialFragment.newInstance(prefix, level);
+                break;
             case Flags.WRITE_TYPE1:
                 showFragment = WordsWriteFragment.newInstance(prefix, level);
                 break;
@@ -77,10 +81,39 @@ public class PracticeActivity extends FragmentActivity {
                 showFragment = CompositionFragment.newInstance(prefix, level);
                 break;
             case Flags.LISTEN_TYPE1:
+                showFragment = ListenFragment.newInstance(prefix, level);
+                break;
+            case Flags.LISTEN_TYPE2:
                 showFragment = S1Fragment.newInstance(prefix, level);
                 break;
         }
         getSupportFragmentManager().beginTransaction().add(R.id.practice_container, showFragment).commit();
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            float startX = ev.getX();
+            switch (type) {
+                case Flags.SPEAK_TYPE1:
+                    ((WordSpeechFragment) showFragment).startX = startX;
+                    break;
+                case Flags.SPEAK_TYPE2:
+                    ((CompositionFragment) showFragment).startX = startX;
+                    break;
+                case Flags.WRITE_TYPE1:
+                    ((WordsWriteFragment) showFragment).startX = startX;
+                    break;
+                case Flags.WRITE_TYPE3:
+                    ((QuizFragment) showFragment).startX = startX;
+                    break;
+                case Flags.WRITE_TYPE2:
+                    ((CompositionFragment) showFragment).startX = startX;
+                    break;
+            }
+            System.out.println("startX:" + startX);
+        }
+        return super.dispatchTouchEvent(ev);
     }
 
     public void setSub_position(String text) {

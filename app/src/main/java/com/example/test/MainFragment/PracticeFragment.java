@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.test.Adapter.PracticeViewpageAdapter;
+import com.example.test.Practice.BookListActivity;
 import com.example.test.Practice.Flags;
 import com.example.test.Practice.PracticeActivity;
 import com.example.test.R;
@@ -160,13 +161,15 @@ public class PracticeFragment extends Fragment {
     View.OnClickListener l1 = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            Toast.makeText(getContext(), "暂无资源", Toast.LENGTH_SHORT).show();
+            if (true) return;
             navigation(Lone.getText().toString(), Flags.LISTEN_TYPE1);
         }
     };
     View.OnClickListener l2 = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            navigation(Ltwo.getText().toString(), Flags.LISTEN_TYPE2);
+            navigationToList(Ltwo.getText().toString(), Flags.LISTEN_TYPE2);
         }
     };
     View.OnClickListener s1 = new View.OnClickListener() {
@@ -178,7 +181,7 @@ public class PracticeFragment extends Fragment {
     View.OnClickListener s2 = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            navigation(Stwo.getText().toString(), Flags.SPEAK_TYPE2);
+            navigationToList(Stwo.getText().toString(), Flags.SPEAK_TYPE2);
         }
     };
     View.OnClickListener w1 = new View.OnClickListener() {
@@ -225,6 +228,15 @@ public class PracticeFragment extends Fragment {
 
     private void navigation(String title, String type) {
         Intent intent = new Intent(getActivity(), PracticeActivity.class);
+        intent.putExtra("title", title);
+        intent.putExtra("type", type);
+        intent.putExtra("prefix", prefix);
+        intent.putExtra("level", getLevel(level));
+        startActivity(intent);
+    }
+
+    private void navigationToList(String title, String type) {
+        Intent intent = new Intent(getActivity(), BookListActivity.class);
         intent.putExtra("title", title);
         intent.putExtra("type", type);
         intent.putExtra("prefix", prefix);

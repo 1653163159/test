@@ -17,6 +17,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.test.Adapter.QuizViewPageAdapter;
@@ -50,7 +51,7 @@ public class CompositionFragment extends Fragment {
     View compositionFragment;
     Activity curActivity;
 
-    SwipeRefreshLayout refreshLayout;
+    ProgressBar refreshLayout;
     ViewPager viewPage;
     PagerAdapter pagerAdapter;
     List<View> compositionViewList;
@@ -108,25 +109,26 @@ public class CompositionFragment extends Fragment {
 
         initView();
         getCompositionList(level, position);
-        refreshLayout.setRefreshing(true);
+        refreshLayout.setVisibility(View.VISIBLE);
+        refreshLayout.bringToFront();
         return compositionFragment;
     }
 
     void initView() {
         refreshLayout = compositionFragment.findViewById(R.id.composition_refresh);
-        refreshLayout.setOnRefreshListener(refreshListener);
-        refreshLayout.setColorSchemeResources(R.color.colorYang, R.color.aliceBlue);
-        refreshLayout.setProgressViewOffset(true, 0, 50);
         viewPage = compositionFragment.findViewById(R.id.composition_list);
         compositionViewList = new ArrayList<>();
         compositionList = new ArrayList<>();
         viewPage.setAdapter(pagerAdapter = new QuizViewPageAdapter(compositionViewList));
         viewPage.setOnPageChangeListener(changeListener);
         viewPage.setOnTouchListener(new View.OnTouchListener() {
+            private float endX;
+
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     System.out.println(event.getRawX());
+                    endX = event.getX();
                     WindowManager wm = (WindowManager) curActivity.getSystemService(getContext().WINDOW_SERVICE);
                     int width = wm.getDefaultDisplay().getWidth();
                     int temp = width / 3;
@@ -136,11 +138,28 @@ public class CompositionFragment extends Fragment {
                     if (event.getRawX() < width / 2 - temp) {
                         viewPage.setCurrentItem(viewPage.getCurrentItem() - 1);
                     }
+                    if (viewPage.getCurrentItem() == compositionList.size() - 1 && startX - endX >= (width / 4)) {
+                        refreshLayout.setVisibility(View.VISIBLE);
+                        refreshLayout.bringToFront();
+                        new Thread() {
+                            @Override
+                            public void run() {
+                                try {
+                                    sleep(1000);
+                                    refreshHandler.sendEmptyMessage(1);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }.start();
+                    }
                 }
                 return false;
             }
         });
     }
+
+    public float startX;
 
     private void getCompositionList(String level, int position) {
         Request.Builder builder = null;
@@ -183,7 +202,7 @@ public class CompositionFragment extends Fragment {
             System.out.println(compositionViewList.size() + ";" + compositionList.size());
             pagerAdapter.notifyDataSetChanged();
             setSub_position((position % 5 + 1) + "/" + compositionList.size());
-            refreshLayout.setRefreshing(false);
+            refreshLayout.setVisibility(View.INVISIBLE);
         }
     };
 
@@ -225,22 +244,6 @@ public class CompositionFragment extends Fragment {
 
         @Override
         public void onPageScrollStateChanged(int state) {
-            if (state == 1) {
-                if (viewPage.getCurrentItem() == compositionList.size() - 1) {
-                    refreshLayout.setRefreshing(true);
-                    new Thread() {
-                        @Override
-                        public void run() {
-                            try {
-                                sleep(1000);
-                                refreshHandler.sendEmptyMessage(1);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }.start();
-                }
-            }
         }
     };
 

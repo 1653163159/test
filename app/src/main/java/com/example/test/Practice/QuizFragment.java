@@ -124,10 +124,13 @@ public class QuizFragment extends Fragment {
         quizViewPage.setAdapter(pageAdapter = new QuizViewPageAdapter(quizViewList));
         quizViewPage.setOnPageChangeListener(changeListener);
         quizViewPage.setOnTouchListener(new View.OnTouchListener() {
+            private float endX;
+
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     System.out.println(event.getRawX());
+                    endX = event.getX();
                     WindowManager wm = (WindowManager) curActivity.getSystemService(getContext().WINDOW_SERVICE);
                     int width = wm.getDefaultDisplay().getWidth();
                     int temp = width / 3;
@@ -137,11 +140,17 @@ public class QuizFragment extends Fragment {
                     if (event.getRawX() < width / 2 - temp) {
                         quizViewPage.setCurrentItem(quizViewPage.getCurrentItem() - 1);
                     }
+                    if (quizViewPage.getCurrentItem() == quizList.size() - 1 && startX - endX >= (width / 4)) {
+                        refresh();
+                        refreshLayout.setRefreshing(true);
+                    }
                 }
                 return false;
             }
         });
     }
+
+    public float startX;
 
     private void getQuizList(String level, int position) {
         Request.Builder builder = null;
@@ -293,12 +302,7 @@ public class QuizFragment extends Fragment {
 
         @Override
         public void onPageScrollStateChanged(int state) {
-            if (state == 1) {
-                if (quizViewPage.getCurrentItem() == quizList.size() - 1) {
-                    refresh();
-                    refreshLayout.setRefreshing(true);
-                }
-            }
+
         }
     };
 

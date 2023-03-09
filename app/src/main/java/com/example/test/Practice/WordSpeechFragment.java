@@ -148,10 +148,13 @@ public class WordSpeechFragment extends Fragment {
         viewPage.setAdapter(pagerAdapter = new QuizViewPageAdapter(wordSpeechViewList));
         viewPage.setOnPageChangeListener(changeListener);
         viewPage.setOnTouchListener(new View.OnTouchListener() {
+            private float endX;
+
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     System.out.println(event.getRawX());
+                    endX = event.getX();
                     WindowManager wm = (WindowManager) curActivity.getSystemService(getContext().WINDOW_SERVICE);
                     int width = wm.getDefaultDisplay().getWidth();
                     int temp = width / 3;
@@ -161,11 +164,27 @@ public class WordSpeechFragment extends Fragment {
                     if (event.getRawX() < width / 2 - temp) {
                         viewPage.setCurrentItem(viewPage.getCurrentItem() - 1);
                     }
+                    if (viewPage.getCurrentItem() == wordSpeechList.size() - 1 && startX - endX >= (width / 4)) {
+                        refreshLayout.setRefreshing(true);
+                        new Thread() {
+                            @Override
+                            public void run() {
+                                try {
+                                    sleep(1000);
+                                    refreshHandler.sendEmptyMessage(1);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }.start();
+                    }
                 }
                 return false;
             }
         });
     }
+
+    public float startX;
 
     private void getWordList(String level, int position) {
         Request.Builder builder = null;
@@ -272,22 +291,7 @@ public class WordSpeechFragment extends Fragment {
 
         @Override
         public void onPageScrollStateChanged(int state) {
-            if (state == 1) {
-                if (viewPage.getCurrentItem() == wordSpeechList.size() - 1) {
-                    refreshLayout.setRefreshing(true);
-                    new Thread() {
-                        @Override
-                        public void run() {
-                            try {
-                                sleep(1000);
-                                refreshHandler.sendEmptyMessage(1);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }.start();
-                }
-            }
+
         }
     };
 
