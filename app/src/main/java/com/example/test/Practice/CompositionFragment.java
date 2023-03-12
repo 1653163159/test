@@ -211,7 +211,7 @@ public class CompositionFragment extends Fragment {
         TextView textView = view.findViewById(R.id.composition_title);
         textView.setText((i + 1) + "." + composition.getContent());
         textView.setMovementMethod(ScrollingMovementMethod.getInstance());
-        textView.setScrollbarFadingEnabled(false);//设置scrollbar一直显示
+        textView.setScrollbarFadingEnabled(true);//false设置scrollbar一直显示
         compositionViewList.add(view);
     }
 

@@ -58,7 +58,6 @@ public class BookListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_book_list);
         initView();
         getStackList(level, position);
-        refresh();
         refreshLayout.setVisibility(View.VISIBLE);
         refreshLayout.bringToFront();
     }

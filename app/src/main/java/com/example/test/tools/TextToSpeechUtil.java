@@ -5,6 +5,9 @@ import android.speech.tts.TextToSpeech;
 
 import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.Locale;
 
 /**
@@ -33,6 +36,20 @@ public class TextToSpeechUtil {
             textToSpeech.setPitch(1.0f);// 设置音调，值越大声音越尖（女生），值越小则变成男声,1.0是常规
             textToSpeech.speak(text,
                     TextToSpeech.QUEUE_FLUSH, null);
+        }
+    }
+
+    public void stop() {
+        if (textToSpeech != null) {
+            textToSpeech.stop(); // 不管是否正在朗读TTS都被打断
+        }
+    }
+
+    public void saveToFile(String path, String content) {
+        if (textToSpeech != null) {
+            HashMap<String, String> myHashRender = new HashMap<>();
+            myHashRender.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, content);
+            textToSpeech.synthesizeToFile(content, myHashRender, path);
         }
     }
 

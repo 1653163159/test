@@ -44,7 +44,7 @@ public class PracticeFragment extends Fragment {
 
     TextView listening, writing, speaking;
     private View listen_view, write_view, speak_view;
-    String prefix = "http://10.27.199.250:8080/rest/";
+    String prefix = Flags.PREFIX;
     String level = "初级";
     TextView Lone, Ltwo, Sone, Stwo, Wone, Wtwo, Wthree;
 

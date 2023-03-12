@@ -37,21 +37,14 @@
             android:id="@+id/practice_position"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="5dp"
-            android:layout_toStartOf="@+id/practice_submit"
+            android:layout_marginEnd="20dp"
             android:gravity="center"
             android:text="1/1"
             android:textSize="17sp" />
 
-        <ImageView
-            android:id="@+id/practice_submit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="10dp"
-            android:src="@drawable/check_circle" />
+
     </RelativeLayout>
 
     <LinearLayout

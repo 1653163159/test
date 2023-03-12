@@ -28,7 +28,6 @@ public class PracticeActivity extends FragmentActivity {
     Button speak;
     String titleName, type, prefix, level;
     TextView sub_position;
-    ImageView subject_submit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,12 +42,11 @@ public class PracticeActivity extends FragmentActivity {
         type = getIntent().getStringExtra("type");
         prefix = getIntent().getStringExtra("prefix");
         level = getIntent().getStringExtra("level");
-
+        String bookName = getIntent().getStringExtra("name");
         speechUtil = new TextToSpeechUtil(getApplicationContext());
         title = findViewById(R.id.title_practice);
         title.setText(titleName);
         sub_position = findViewById(R.id.practice_position);
-        subject_submit = findViewById(R.id.practice_submit);
         EditText editText = findViewById(R.id.copy_content);
         TextView pinyin = findViewById(R.id.pinyin);
         speak = findViewById(R.id.speak_copy_content);
@@ -69,7 +67,9 @@ public class PracticeActivity extends FragmentActivity {
                 showFragment = WordSpeechFragment.newInstance(prefix, level);
                 break;
             case Flags.SPEAK_TYPE2:
-                showFragment = SpeechMaterialFragment.newInstance(prefix, level);
+                showFragment = SpeechMaterialFragment.newInstance(prefix, bookName);
+                title.setText(bookName);
+                sub_position.setVisibility(View.INVISIBLE);
                 break;
             case Flags.WRITE_TYPE1:
                 showFragment = WordsWriteFragment.newInstance(prefix, level);
@@ -85,6 +85,8 @@ public class PracticeActivity extends FragmentActivity {
                 break;
             case Flags.LISTEN_TYPE2:
                 showFragment = ListenFragment.newInstance(prefix, level);
+                title.setText(bookName);
+                sub_position.setVisibility(View.INVISIBLE);
                 break;
         }
         getSupportFragmentManager().beginTransaction().add(R.id.practice_container, showFragment).commit();
@@ -117,7 +119,16 @@ public class PracticeActivity extends FragmentActivity {
         sub_position.setText(text);
     }
 
-    public void back(View view) {
+    public void back() {
         onBackPressed();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        switch (type) {
+            case Flags.SPEAK_TYPE2:
+                ((SpeechMaterialFragment) showFragment).util.releaseSpeech();
+        }
     }
 }

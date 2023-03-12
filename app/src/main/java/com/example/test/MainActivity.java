@@ -53,7 +53,7 @@ import java.util.List;
 public class MainActivity extends FragmentActivity {
     //private String baseUrl = "http://192.168.0.107:8080";
     //private final OkHttpClient client = new OkHttpClient();
-    String prefix = "http://10.27.199.250:8080/rest/";
+    String prefix = "http://124.223.115.35/rest/";
     private PracticeFragment practiceFragment;
     private ExamFragment examFragment;
     private TalkFragment talkFragment;
