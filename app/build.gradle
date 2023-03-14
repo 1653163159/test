@@ -18,7 +18,7 @@ android {
         }
     }
     namespace 'com.example.test'
-    compileSdk 32
+    compileSdk 31
 
     defaultConfig {
         applicationId "com.example.test"
@@ -72,4 +72,5 @@ dependencies {
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
     implementation 'com.makeramen:roundedimageview:2.3.0'
     implementation 'com.belerweb:pinyin4j:2.5.1'
+    implementation 'androidx.core:core-splashscreen:1.0.0-beta02'
 }

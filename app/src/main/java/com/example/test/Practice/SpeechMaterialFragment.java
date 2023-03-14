@@ -150,7 +150,7 @@ public class SpeechMaterialFragment extends Fragment {
                 textView.setText(stackList.get(position).getContent());
                 textView.scrollTo(0, 0);
                 util.stop();
-                listView.setVisibility(View.INVISIBLE);
+                hiddenAnimation(listView);
                 curLayout.findViewById(R.id.tip).setVisibility(View.VISIBLE);
                 hiddenUI.sendEmptyMessageDelayed(1, 5000);
             }
@@ -161,7 +161,8 @@ public class SpeechMaterialFragment extends Fragment {
                 listView.bringToFront();
                 imageView.bringToFront();
                 if (listView.getVisibility() == View.VISIBLE) {
-                    listView.setVisibility(View.INVISIBLE);
+                    hiddenAnimation(listView);
+
                 } else {
                     startAnimation(listView);
                 }
@@ -233,6 +234,25 @@ public class SpeechMaterialFragment extends Fragment {
                 anim.start();
             }
         }, 0);
+    }
+
+    private void hiddenAnimation(ListView view) {
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                view.setVisibility(View.VISIBLE);
+                ValueAnimator anim = ObjectAnimator.ofFloat(view, "translationX", 0, 500);
+                anim.setDuration(200);
+                anim.start();
+            }
+        }, 0);
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                view.setVisibility(View.INVISIBLE);
+            }
+        }, 200);
     }
 
     Handler hiddenUI = new Handler() {

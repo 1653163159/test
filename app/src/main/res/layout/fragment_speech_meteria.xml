@@ -29,8 +29,8 @@
 
     <ImageView
         android:id="@+id/speech_chapter_switch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="5dp"
@@ -47,7 +47,10 @@
         android:layout_height="match_parent"
         android:layout_alignParentEnd="true"
         android:background="@drawable/border_peru"
-        android:paddingTop="29dp"
+        android:paddingTop="32dp"
+        android:paddingBottom="10dp"
+        android:paddingStart="3dp"
+        android:paddingEnd="3dp"
         android:visibility="invisible" />
     <!-- TODO: Update blank fragment layout -->
     <TextView

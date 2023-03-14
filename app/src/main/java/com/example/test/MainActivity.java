@@ -1,6 +1,8 @@
 package com.example.test;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.splashscreen.SplashScreen;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -50,7 +52,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends AppCompatActivity {
     //private String baseUrl = "http://192.168.0.107:8080";
     //private final OkHttpClient client = new OkHttpClient();
     String prefix = "http://124.223.115.35/rest/";
@@ -79,9 +81,23 @@ public class MainActivity extends FragmentActivity {
     SearchListViewAdapter searchListViewAdapter;
     List<userInform> items = new ArrayList<>();
 
+    private boolean isReady = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SplashScreen splashScreen = SplashScreen.installSplashScreen(this);
+        splashScreen.setKeepOnScreenCondition(new SplashScreen.KeepOnScreenCondition() {
+            @Override
+            public boolean shouldKeepOnScreen() {
+                return isReady;
+            }
+        });
+        try {
+            Thread.sleep(1000);
+            isReady = false;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
