@@ -1,17 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Practice.ListenFragment">
 
+    <ProgressBar
+        android:id="@+id/pg_bar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/chapter_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
+        android:layout_toStartOf="@id/speech_chapter_switch"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/speech_chapter_switch"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        android:background="@drawable/menu_btn"
+        android:src="@drawable/chapter_list"
+        android:text="目录"
+        android:textColor="@color/black"
+        android:textSize="12sp" />
+
+    <ImageView
+        android:id="@+id/text_show"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_toStartOf="@id/speech_chapter_switch"
+        android:background="@drawable/menu_btn"
+        android:src="@drawable/text_fields"
+        android:text="目录"
+        android:textColor="@color/black"
+        android:textSize="12sp" />
+
+    <ImageView
+        android:id="@+id/tv_play"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_below="@id/chapter_name"
+        android:layout_marginTop="50dp"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/ic_baseline_play" />
+
+    <ListView
+        android:id="@+id/speech_chapter_list"
+        android:layout_width="150dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:background="@drawable/border_peru"
+        android:paddingStart="3dp"
+        android:paddingTop="32dp"
+        android:paddingEnd="3dp"
+        android:paddingBottom="10dp"
+        android:visibility="invisible" />
     <!-- TODO: Update blank fragment layout -->
     <TextView
+        android:id="@+id/speech_material"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="无语"
+        android:layout_below="@id/chapter_name"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
+        android:background="@color/white"
+        android:scrollbars="vertical"
         android:textColor="@color/black"
-        android:textSize="30sp" />
+        android:textIsSelectable="true"
+        android:textSize="13sp"
+        android:visibility="invisible" />
 
-</FrameLayout>
+    <TextView
+        android:id="@+id/tip"
+        android:layout_width="15dp"
+        android:layout_height="200dp"
+        android:layout_below="@id/speech_chapter_switch"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="20dp"
+        android:text="点击按钮播放音频"
+        android:textSize="10sp" />
+
+
+</RelativeLayout>

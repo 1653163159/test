@@ -6,12 +6,14 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import android.app.Activity;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -54,6 +56,12 @@ public class BookListActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (Build.VERSION.SDK_INT >= 21) {
+            Window window = this.getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.setStatusBarColor(this.getResources().getColor(R.color.cornFlowerBlue));
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_list);
         initView();
@@ -128,7 +136,7 @@ public class BookListActivity extends AppCompatActivity {
     void getStackList(String level, int position) {
         Request.Builder builder = null;
         String url = prefix + Flags.STACK_URL + level + File.separator + position;
-        System.out.println(url);
+        System.out.println(level + ":" + url);
         builder = new Request.Builder().url(url);
         execute(builder);
     }
@@ -161,6 +169,7 @@ public class BookListActivity extends AppCompatActivity {
             for (int i = 0; i < jsonArray.size(); i++) {
                 Stack stack = new Gson().fromJson(jsonArray.get(i), Stack.class);
                 bookList.add(stack);
+                System.out.println("\\" + stack.getBookname());
             }
             addView(bookList);
             pageAdapter.notifyDataSetChanged();

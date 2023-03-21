@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainFragment.PassFragment">
+
+
+    <TextView
+        android:id="@+id/pass_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_gravity="center"
+        android:layout_margin="10dp"
+        android:background="@drawable/pass_btn"
+        android:drawableLeft="@drawable/ic_baseline_hexagon_default"
+        android:padding="6dp"
+        android:text="OP-1"
+        android:textColor="@color/black"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/pass_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/pass_1"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:layout_margin="10dp"
+        android:background="@drawable/pass_btn"
+        android:drawableLeft="@drawable/ic_baseline_hexagon_default"
+        android:padding="6dp"
+        android:text="OP-2"
+        android:textColor="@color/black"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/pass_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/pass_2"
+        android:layout_alignParentEnd="true"
+        android:layout_gravity="center"
+        android:layout_margin="10dp"
+        android:background="@drawable/pass_btn"
+        android:drawableLeft="@drawable/ic_baseline_hexagon_default"
+        android:padding="6dp"
+        android:text="OP-3"
+        android:textColor="@color/black"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/pass_4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/pass_3"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:layout_margin="10dp"
+        android:background="@drawable/pass_btn"
+        android:drawableLeft="@drawable/ic_baseline_hexagon_default"
+        android:padding="6dp"
+        android:text="OP-4"
+        android:textColor="@color/black"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/pass_5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/pass_4"
+        android:layout_alignParentStart="true"
+        android:layout_gravity="center"
+        android:layout_margin="10dp"
+        android:background="@drawable/pass_btn"
+        android:drawableLeft="@drawable/ic_baseline_hexagon_default"
+        android:padding="6dp"
+        android:text="OP-5"
+        android:textColor="@color/black"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/pass_6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/pass_5"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:layout_margin="10dp"
+        android:background="@drawable/pass_btn"
+        android:drawableLeft="@drawable/ic_baseline_hexagon_default"
+        android:padding="6dp"
+        android:text="OP-6"
+        android:textColor="@color/black"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/pass_7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/pass_6"
+        android:layout_alignParentEnd="true"
+        android:layout_gravity="center"
+        android:layout_margin="10dp"
+        android:background="@drawable/pass_btn"
+        android:drawableLeft="@drawable/ic_baseline_hexagon_default"
+        android:padding="6dp"
+        android:text="OP-7"
+        android:textColor="@color/black"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/pass_8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/pass_7"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:layout_margin="10dp"
+        android:background="@drawable/pass_btn"
+        android:drawableLeft="@drawable/ic_baseline_hexagon_default"
+        android:padding="6dp"
+        android:text="OP-8"
+        android:textColor="@color/black"
+        android:textSize="20sp" />
+</RelativeLayout>

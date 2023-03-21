@@ -3,7 +3,6 @@ package com.example.test;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.splashscreen.SplashScreen;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.app.AlertDialog;
@@ -12,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -20,10 +20,13 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 
 import com.example.test.MainFragment.ExamFragment;
+import com.example.test.MainFragment.IntegrationFragment;
 import com.example.test.MainFragment.MineFragment;
 import com.example.test.MainFragment.PracticeFragment;
 import com.example.test.MainFragment.TalkFragment;
@@ -31,10 +34,8 @@ import com.example.test.Adapter.SearchListViewAdapter;
 import com.example.test.Practice.Flags;
 import com.example.test.pojo.userInform;
 import com.example.test.tools.JsonUtil;
+import com.example.test.tools.Notifications;
 import com.example.test.tools.SmarkUtil;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.StanzaListener;
@@ -53,11 +54,10 @@ import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
-    //private String baseUrl = "http://192.168.0.107:8080";
-    //private final OkHttpClient client = new OkHttpClient();
+
     String prefix = "http://124.223.115.35/rest/";
     private PracticeFragment practiceFragment;
-    private ExamFragment examFragment;
+    private IntegrationFragment examFragment;
     private TalkFragment talkFragment;
     private MineFragment mineFragment;
 
@@ -67,8 +67,8 @@ public class MainActivity extends AppCompatActivity {
     private Spinner practiceLevel;
 
     //openfireConfig
-    public String C_HOST = "10.27.199.250";//服务器在局域网中IP
-    public String C_DOMAIN = "192.168.0.107";//服务器主机名
+    public String C_HOST = "124.223.115.35";//服务器在局域网中IP
+    public String C_DOMAIN = "124.223.115.35";//服务器主机名
     public String USER_NAME = "hqx", USER_PWD = "123456";
     public SmarkUtil smarkUti;
     JsonUtil jsonUtil;
@@ -85,13 +85,15 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (Build.VERSION.SDK_INT >= 21) {
+            Window window = this.getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.setStatusBarColor(this.getResources().getColor(R.color.cornFlowerBlue));
+        }
+
         SplashScreen splashScreen = SplashScreen.installSplashScreen(this);
-        splashScreen.setKeepOnScreenCondition(new SplashScreen.KeepOnScreenCondition() {
-            @Override
-            public boolean shouldKeepOnScreen() {
-                return isReady;
-            }
-        });
+        splashScreen.setKeepOnScreenCondition(() -> isReady);
         try {
             Thread.sleep(1000);
             isReady = false;
@@ -175,8 +177,6 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * 切换Fragment显示
-     *
-     * @param id
      */
     private void changeFragment(int id) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();//开启一个Fragment事务
@@ -190,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
             }
         } else if (id == R.id.tv_exam) {
             if (examFragment == null) {
-                examFragment = ExamFragment.newInstance(prefix, null);
+                examFragment = IntegrationFragment.newInstance(prefix, null);
                 transaction.add(R.id.main_container, examFragment);
             } else {
                 transaction.show(examFragment);
@@ -216,8 +216,6 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * 隐藏所有Fragment
-     *
-     * @param transaction
      */
     private void hideFragment(FragmentTransaction transaction) {
         if (practiceFragment != null) transaction.hide(practiceFragment);
@@ -228,8 +226,6 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * 改变选中导航的颜色
-     *
-     * @param id
      */
     private void changeSelect(int id) {
         tvMain.setSelected(false);
@@ -287,7 +283,7 @@ public class MainActivity extends AppCompatActivity {
                 popView = LayoutInflater.from(this).inflate(R.layout.request_friend, (ViewGroup) findViewById(R.id.Spopwindow_element));
                 break;
         }
-        popupWindow = new PopupWindow(popView, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        popupWindow = new PopupWindow(popView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         popupWindow.setOutsideTouchable(true);
         popupWindow.setFocusable(true);
         popupWindow.setBackgroundDrawable(new BitmapDrawable());
@@ -509,12 +505,10 @@ public class MainActivity extends AppCompatActivity {
             if (smarkUti.isLogin()) {
                 Toast.makeText(MainActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
                 loginWindow.dismiss();
-            } else {
-                Toast.makeText(MainActivity.this, "登录失败，请检查用户名和密码", Toast.LENGTH_SHORT).show();
             }
-
         } catch (Exception e) {
             System.out.println("Chat服务连接失败" + e.getLocalizedMessage());
+            Toast.makeText(MainActivity.this, "登录失败，请检查用户名和密码", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
     }
@@ -545,6 +539,7 @@ public class MainActivity extends AppCompatActivity {
             //System.out.println("jid:"+res.split("&")[0]);
             updateUserList(res.split("&")[0]);
             Toast.makeText(getApplicationContext(), "收到来自" + res.split("&")[0].split("@")[0] + "的消息:\n    " + res.split("&")[1], Toast.LENGTH_LONG).show();
+            new Notifications("userMsg").show(res.split("&")[0].split("@")[0], res.split("&")[1], MainActivity.this);
             String StatePath = getExternalCacheDir().getAbsolutePath() + File.separator + "userState.json";
             if (talkFragment.isTalking && res.split("&")[0].equals(talkFragment.FriendJid)) {
                 talkFragment.msgItems.add("1" + res.split("@")[0] + ":\n      " + res.split("&")[1]);

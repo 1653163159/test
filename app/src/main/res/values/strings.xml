@@ -1,8 +1,8 @@
 <resources>
     <string name="userName">hqx</string>
     <string name="userPassword">123456</string>
-    <string name="serverHost">10.27.199.250</string>
-    <string name="serverDomain">192.168.0.107</string>
+    <string name="serverHost">124.223.115.35</string>
+    <string name="serverDomain">124.223.115.35</string>
 
     <string name="app_name">汉语训练平台</string>
     <string name="main">练习</string>

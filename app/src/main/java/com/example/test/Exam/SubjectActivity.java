@@ -6,8 +6,11 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -48,6 +51,12 @@ public class SubjectActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (Build.VERSION.SDK_INT >= 21) {
+            Window window = this.getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.setStatusBarColor(this.getResources().getColor(R.color.cornFlowerBlue));
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_subject);
         try {
@@ -81,22 +90,19 @@ public class SubjectActivity extends AppCompatActivity {
                 }).create().show();
             }
         });
-        submit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder dialog = new AlertDialog.Builder(SubjectActivity.this);
-                dialog.setTitle("返回").setMessage("是否提交").setPositiveButton("确认", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        CalculateGrade();
-                    }
-                }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                }).create().show();
-            }
+        submit.setOnClickListener(v -> {
+            AlertDialog.Builder dialog = new AlertDialog.Builder(SubjectActivity.this);
+            dialog.setTitle("返回").setMessage("是否提交").setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    CalculateGrade();
+                }
+            }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            }).create().show();
         });
         title.setText(getIntent().getStringExtra("name"));
         audioPlay = findViewById(R.id.sub_audio_play);

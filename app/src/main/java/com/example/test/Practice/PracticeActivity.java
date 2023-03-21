@@ -4,9 +4,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -31,6 +34,12 @@ public class PracticeActivity extends FragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (Build.VERSION.SDK_INT >= 21) {
+            Window window = this.getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.setStatusBarColor(this.getResources().getColor(R.color.cornFlowerBlue));
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_practice);
 
@@ -84,7 +93,7 @@ public class PracticeActivity extends FragmentActivity {
                 showFragment = S1Fragment.newInstance(prefix, level);
                 break;
             case Flags.LISTEN_TYPE2:
-                showFragment = ListenFragment.newInstance(prefix, level);
+                showFragment = ListenFragment.newInstance(prefix, bookName);
                 title.setText(bookName);
                 sub_position.setVisibility(View.INVISIBLE);
                 break;
