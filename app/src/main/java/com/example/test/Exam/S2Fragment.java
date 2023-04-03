@@ -218,12 +218,14 @@ public class S2Fragment extends Fragment {
         public void onClick(View v) {
             answerSavePath = curActivity.getExternalCacheDir().getAbsolutePath() + File.separator + "result.png";
             try {
-                paintView.save(answerSavePath);
+                paintView.saveView(answerSavePath);
                 paintView.clear();
                 /*Bitmap bitmap = BitmapFactory.decodeFile(answerSavePath);//读取本地文件转为bitmap并更新UI
                 picResource.setImageBitmap(bitmap);*/
             } catch (IOException e) {
                 e.printStackTrace();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
             String ak = "xdMF0dc8gUpM4Epenwvn0rZS";
             String sk = "SoVzlkXOIGaLWIPBvMvQiHUF370sQBqG";

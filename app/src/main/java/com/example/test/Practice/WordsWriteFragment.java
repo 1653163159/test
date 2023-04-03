@@ -1,7 +1,11 @@
 package com.example.test.Practice;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -15,12 +19,17 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.PopupMenu;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,6 +52,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -121,6 +131,7 @@ public class WordsWriteFragment extends Fragment {
         initView();
         getWordList(level, position);
         refreshLayout.setVisibility(View.VISIBLE);
+        refreshLayout.bringToFront();
         return wordsWriteFragment;
     }
 
@@ -150,6 +161,7 @@ public class WordsWriteFragment extends Fragment {
                     }
                     if (viewPage.getCurrentItem() == wordsWriteList.size() - 1 && startX - endX >= (width / 4)) {
                         refreshLayout.setVisibility(View.VISIBLE);
+                        refreshLayout.bringToFront();
                         new Thread() {
                             @Override
                             public void run() {
@@ -224,6 +236,7 @@ public class WordsWriteFragment extends Fragment {
         TextView answer = view.findViewById(R.id.word_answer);
         content.setText(word.getContent());
         LinePathView paintView = view.findViewById(R.id.paint);
+        ImageView imageView = view.findViewById(R.id.word_pic);
         Button reset = view.findViewById(R.id.write_reset), submit = view.findViewById(R.id.write_submit);
         reset.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -234,19 +247,31 @@ public class WordsWriteFragment extends Fragment {
         Handler updateUI = new Handler() {
             @Override
             public void handleMessage(@NonNull Message msg) {
-                answer.setText(msg.obj.toString());
+                String ans = msg.obj.toString();
+                if (ans.equals("") || ans == null) {
+                    Toast.makeText(getContext(), "请按照示例进行书写，保证字迹清晰", Toast.LENGTH_LONG).show();
+                }
+                answer.setText(ans);
+                refreshLayout.setVisibility(View.INVISIBLE);
             }
         };
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String answerSavePath = curActivity.getExternalCacheDir().getAbsolutePath() + File.separator + "result.png";
+                refreshLayout.setVisibility(View.VISIBLE);
+                refreshLayout.bringToFront();
                 try {
-                    paintView.save(answerSavePath);
+                    paintView.saveView(answerSavePath);
                     paintView.clear();
+                    FileInputStream file=new FileInputStream(new File(answerSavePath));
+                    imageView.setImageBitmap(BitmapFactory.decodeStream(file));
                 } catch (IOException e) {
                     e.printStackTrace();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
                 }
+                //showPop(answerSavePath, content);
                 String ak = "xdMF0dc8gUpM4Epenwvn0rZS";
                 String sk = "SoVzlkXOIGaLWIPBvMvQiHUF370sQBqG";
                 //初始化ORC访问许可
@@ -369,5 +394,18 @@ public class WordsWriteFragment extends Fragment {
         wordsWriteViewList.clear();
         wordsWriteList.clear();
         pagerAdapter.notifyDataSetChanged();
+    }
+
+    void showPop(String path, View show) {
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.image, null);
+        PopupWindow window = new PopupWindow();
+        window.setContentView(view);
+        window.setWidth(FrameLayout.LayoutParams.WRAP_CONTENT);
+        window.setHeight(FrameLayout.LayoutParams.WRAP_CONTENT);
+        window.setOutsideTouchable(true);
+        window.setFocusable(true);
+        window.showAtLocation(show, Gravity.CENTER, 0, 0);
+        ImageView imageView = view.findViewById(R.id.image);
+        imageView.setImageURI(Uri.fromFile(new File(path)));
     }
 }

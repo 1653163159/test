@@ -53,6 +53,6 @@ public class PracticeViewpageAdapter extends PagerAdapter {
 
     @Override
     public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
-        container.removeView(viewList.get(position));
+        container.removeView((View) object);
     }
 }

@@ -9,7 +9,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="9"
+        android:layout_weight="6"
         android:gravity="center"
         android:orientation="horizontal">
         <!-- TODO: Update blank fragment layout -->
@@ -70,6 +70,14 @@
                 android:gravity="center"
                 android:textColor="@color/black"
                 android:textSize="25sp" />
+
+            <ImageView
+                android:id="@+id/word_pic"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_margin="5dp"
+                android:scaleType="fitXY"
+                android:background="@drawable/handwriting_border" />
         </LinearLayout>
 
 
@@ -78,10 +86,10 @@
     <ImageView
         android:id="@+id/writing_resource"
         android:layout_width="wrap_content"
-        android:layout_height="2dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_margin="10dp"
-        android:src="@drawable/ic_baseline_play" />
+        android:src="@drawable/baseline_brush_24" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -90,13 +98,18 @@
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <com.example.test.tools.LinePathView
-            android:id="@+id/paint"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:layout_margin="15dp"
             android:layout_weight="3"
-            android:background="@drawable/handwriting_border" />
+            android:background="@drawable/handwriting_border">
+
+            <com.example.test.tools.LinePathView
+                android:id="@+id/paint"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </FrameLayout>
 
         <LinearLayout
             android:layout_width="match_parent"

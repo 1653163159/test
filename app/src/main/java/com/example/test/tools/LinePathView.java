@@ -2,6 +2,7 @@ package com.example.test.tools;
 
 import android.content.*;
 import android.graphics.*;
+import android.media.ThumbnailUtils;
 import android.util.*;
 import android.view.*;
 
@@ -28,7 +29,7 @@ public class LinePathView extends View {
     //生成的图片
     private Bitmap cachebBitmap;
     //画笔宽度 px；
-    private int mPaintWidth = 10;
+    private int mPaintWidth = 8;
     //画笔颜色
     private int mPenColor = Color.BLACK;
     //背景色（指最终签名结果文件的背景颜色，默认为透明色）
@@ -165,8 +166,14 @@ public class LinePathView extends View {
      * @param blank      要保留的边缘空白距离
      */
     public void save(String path, boolean clearBlank, int blank) throws IOException {
+        int width = cachebBitmap.getWidth();
+        int height = cachebBitmap.getHeight();
 
-        Bitmap bitmap = cachebBitmap;
+
+        // 取得想要缩放的matrix參數
+        Matrix matrix = new Matrix();
+        matrix.postScale(2, 2);
+        Bitmap bitmap = Bitmap.createBitmap(cachebBitmap, 0, 0, width, height, matrix, true);
         //BitmapUtil.createScaledBitmapByHeight(srcBitmap, 300);//  压缩图片
         if (clearBlank) {
             bitmap = clearBlank(bitmap, blank);
@@ -188,8 +195,28 @@ public class LinePathView extends View {
         if (file.exists()) {
             file.delete();
         }
-        fOut=new FileOutputStream(file);
+        fOut = new FileOutputStream(file);
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, fOut);
+        fOut.flush();
+        fOut.close();
+    }
+
+    public void saveView(String path) throws Exception {
+        setDrawingCacheEnabled(true);
+//获取缓存的 Bitmap
+        Bitmap drawingCache = getDrawingCache();
+        //复制获取的 Bitmap
+        drawingCache = Bitmap.createBitmap(drawingCache);
+        //关闭视图的缓存
+        setDrawingCacheEnabled(false);
+
+        FileOutputStream fOut = null;
+        File file = new File(path);
+        if (file.exists()) {
+            file.delete();
+        }
+        fOut = new FileOutputStream(file);
+        drawingCache.compress(Bitmap.CompressFormat.PNG, 100, fOut);
         fOut.flush();
         fOut.close();
     }
