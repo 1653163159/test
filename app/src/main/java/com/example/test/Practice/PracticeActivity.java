@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 import com.example.test.Exam.S1Fragment;
 import com.example.test.Exam.S2Fragment;
 import com.example.test.Exam.S3Fragment;
+import com.example.test.MainActivity;
 import com.example.test.R;
 import com.example.test.tools.HanZiToPinYin;
 import com.example.test.tools.TextToSpeechUtil;
@@ -31,6 +33,7 @@ public class PracticeActivity extends FragmentActivity {
     Button speak;
     String titleName, type, prefix, level;
     TextView sub_position;
+    ImageView back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +72,13 @@ public class PracticeActivity extends FragmentActivity {
                 } catch (BadHanyuPinyinOutputFormatCombination e) {
                     e.printStackTrace();
                 }
+            }
+        });
+        back = findViewById(R.id.practice_back);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
             }
         });
         switch (type) {
@@ -138,6 +148,7 @@ public class PracticeActivity extends FragmentActivity {
         switch (type) {
             case Flags.SPEAK_TYPE2:
                 ((SpeechMaterialFragment) showFragment).util.releaseSpeech();
+                break;
         }
     }
 }

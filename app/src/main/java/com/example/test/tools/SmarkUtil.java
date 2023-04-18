@@ -744,6 +744,10 @@ public class SmarkUtil {
         return connection.getUser();
     }
 
+    public String getUserByString() {
+        return connection.getUser().toString().split("/")[0];
+    }
+
     /**
      * 返回当前登录用户的Jid
      *

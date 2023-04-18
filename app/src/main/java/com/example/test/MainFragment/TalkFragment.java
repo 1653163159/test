@@ -1,6 +1,8 @@
 package com.example.test.MainFragment;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -20,12 +22,14 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.example.test.Adapter.MsgListViewAdapter;
 import com.example.test.Adapter.UserListViewAdapter;
+import com.example.test.MainActivity;
 import com.example.test.Practice.Flags;
 import com.example.test.R;
 import com.example.test.pojo.UserMsg;
@@ -37,8 +41,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.roster.RosterEntry;
+import org.jxmpp.stringprep.XmppStringprepException;
 
 import java.io.File;
 import java.io.IOException;
@@ -294,7 +300,7 @@ public class TalkFragment extends Fragment {
         getActivity().getWindowManager().getDefaultDisplay().getRectSize(outSize);
         talkWindow = new PopupWindow(popView, outSize.right - 200, outSize.bottom - 1000);
         talkWindow.setFocusable(true);
-        talkWindow.setBackgroundDrawable(getResources().getDrawable(R.drawable.handwriting_border));
+        talkWindow.setBackgroundDrawable(getResources().getDrawable(R.drawable.session_list));
         talkWindow.showAtLocation(curLayout, Gravity.CENTER, 0, 0);
         talkWindow.setInputMethodMode(PopupWindow.INPUT_METHOD_FROM_FOCUSABLE);
         talkWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
@@ -305,10 +311,35 @@ public class TalkFragment extends Fragment {
         //区分不同用户的消息
         int myFlag = 0, hisFlag = 1;
         path = curActivity.getExternalCacheDir().getAbsolutePath() + File.separator + friendJid + ".json";
-        Toolbar toolbar = popView.findViewById(R.id.backToTalk);
+        TextView toolbar = popView.findViewById(R.id.backToTalk);
         EditText msgContent = popView.findViewById(R.id.msg_edit);
         Button msgSend = popView.findViewById(R.id.msg_send);
-        toolbar.setTitle(friendName);
+        toolbar.setText(friendName);
+        ImageView delete = popView.findViewById(R.id.delete_friend);
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
+                dialog.setTitle("警告").setMessage("是否删除该好友？").setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        try {
+                            connect.removeUser(friendName);
+                            refreshItems(connect);
+                            talkWindow.dismiss();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        dialog.dismiss();
+                    }
+                }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).create().show();
+            }
+        });
         msgList = popView.findViewById(R.id.msg_list);
         msgList.setAdapter(msgListViewAdapter = new MsgListViewAdapter(getContext(), msgItems));
         msgRefresh = popView.findViewById(R.id.msg_list_refresh);

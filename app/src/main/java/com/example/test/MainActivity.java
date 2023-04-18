@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -25,6 +26,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 
+import com.example.test.Adapter.FriendRequestListAdapter;
 import com.example.test.MainFragment.ExamFragment;
 import com.example.test.MainFragment.IntegrationFragment;
 import com.example.test.MainFragment.MineFragment;
@@ -32,10 +34,16 @@ import com.example.test.MainFragment.PracticeFragment;
 import com.example.test.MainFragment.TalkFragment;
 import com.example.test.Adapter.SearchListViewAdapter;
 import com.example.test.Practice.Flags;
+import com.example.test.pojo.FriendRequest;
+import com.example.test.pojo.Quiz;
 import com.example.test.pojo.userInform;
 import com.example.test.tools.JsonUtil;
 import com.example.test.tools.Notifications;
 import com.example.test.tools.SmarkUtil;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.StanzaListener;
@@ -52,8 +60,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
 
 public class MainActivity extends AppCompatActivity {
+    private OkHttpClient client = new OkHttpClient();
 
     String prefix = "http://124.223.115.35/rest/";
     private PracticeFragment practiceFragment;
@@ -80,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
     ListView searchList;
     SearchListViewAdapter searchListViewAdapter;
     List<userInform> items = new ArrayList<>();
+    List<FriendRequest> friendRequestList = new ArrayList<>();//登录成功后立即获取用户申请列表
 
     private boolean isReady = true;
 
@@ -273,6 +289,8 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param v
      */
+    FriendRequestListAdapter adapter;
+
     private void showPopWindow(View v) {
         View popView = null;
         switch (v.getId()) {
@@ -290,6 +308,7 @@ public class MainActivity extends AppCompatActivity {
         switch (v.getId()) {
             case R.id.search_new_friend:
                 //弹窗组件获取,必须在popWindow的上下文中才能找到控件
+                popupWindow.setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
                 popupWindow.showAsDropDown(search_friend, 0, 50);
                 searchList = popView.findViewById(R.id.search_list);
                 searchList.setVisibility(View.INVISIBLE);
@@ -324,7 +343,19 @@ public class MainActivity extends AppCompatActivity {
                 });
                 break;
             case R.id.friend_request:
+                popupWindow.setHeight(LinearLayout.LayoutParams.MATCH_PARENT);
                 popupWindow.showAsDropDown(request_friend);
+                ImageView view = popView.findViewById(R.id.back);
+                view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        popupWindow.dismiss();
+                    }
+                });
+                ExpandableListView listView = popView.findViewById(R.id.friend_request_list);
+                adapter = new FriendRequestListAdapter(friendRequestList, smarkUti, this);
+                listView.setAdapter(adapter);
+                friendRequestList(smarkUti.getUserByString(), smarkUti.getUserByString());
                 break;
         }
     }
@@ -341,15 +372,17 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(DialogInterface dialog, int which) {
                     try {
                         smarkUti.addSearchFriend(jid, items.get(position).getName());
-                    } catch (XmppStringprepException e) {
+                        new_friend_request(smarkUti.getUserByString(), jid);
+                        friendRequestList(smarkUti.getUserByString(), smarkUti.getUserByString());
+                    } catch (XMPPException.XMPPErrorException e) {
                         e.printStackTrace();
                     } catch (SmackException.NotConnectedException e) {
                         e.printStackTrace();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    } catch (XMPPException.XMPPErrorException e) {
+                    } catch (XmppStringprepException e) {
                         e.printStackTrace();
                     } catch (SmackException.NoResponseException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
                         e.printStackTrace();
                     } catch (SmackException.NotLoggedInException e) {
                         e.printStackTrace();
@@ -377,18 +410,26 @@ public class MainActivity extends AppCompatActivity {
                     if (presence.getType().equals(Presence.Type.subscribe)) {
                         if (smarkUti.getUserByJid(presence.getFrom().toString())) {
                             System.out.println(presence.getFrom() + "已同意您的好友申请");
+                            delete_friend_request(smarkUti.getUserByString(), presence.getFrom().toString().split("/")[0]);
                         } else {
                             System.out.println(presence.getFrom() + "向您发送好友申请");
                             Message message = friendRequestTip.obtainMessage();
                             message.obj = presence.getFrom();
                             message.sendToTarget();
                         }
+                        friendRequestList(smarkUti.getUserByString(), smarkUti.getUserByString());
                     }
                     if (presence.getType().equals(Presence.Type.subscribed)) {
                         System.out.println(presence.getFrom() + "已同意您的好友申请");
+                        Toast.makeText(MainActivity.this, presence.getFrom().toString() + ":好友添加成功", Toast.LENGTH_SHORT).show();
+                        delete_friend_request(smarkUti.getUserByString(), presence.getFrom().toString().split("/")[0]);
+                        friendRequestList(smarkUti.getUserByString(), smarkUti.getUserByString());
                     } else if (presence.getType().equals(Presence.Type.unsubscribe)) {
                         System.out.println(presence.getFrom() + "拒绝了您的好友申请");
                         smarkUti.removeUser(presence.getFrom().toString().split("@")[0]);
+                        delete_friend_request(smarkUti.getUserByString(), presence.getFrom().toString().split("/")[0]);
+                        friendRequestList(smarkUti.getUserByString(), smarkUti.getUserByString());
+                        Toast.makeText(MainActivity.this, presence.getFrom().toString() + ":对方已拒绝", Toast.LENGTH_SHORT).show();
                     }
                         /*if (presence.getType().equals(Presence.Type.available)) {
                             System.out.println(presence.getFrom() + "已上线");
@@ -424,25 +465,21 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 try {
                     smarkUti.addUser(name, name, "Friends");
+                    delete_friend_request(jid, smarkUti.getUserByString());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 dialog.dismiss();
             }
-        }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+        }).setNegativeButton("暂定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                try {
+               /* try {
                     smarkUti.removeUser(name);
-                } catch (XmppStringprepException e) {
-                    e.printStackTrace();
-                } catch (SmackException.NotConnectedException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    delete_friend_request(jid, smarkUti.getUserByString());
                 } catch (Exception e) {
                     e.printStackTrace();
-                }
+                }*/
                 dialog.dismiss();
             }
         }).create().show();
@@ -506,6 +543,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
                 loginWindow.dismiss();
             }
+            friendRequestList(smarkUti.getUserByString(), smarkUti.getUserByString());
         } catch (Exception e) {
             System.out.println("Chat服务连接失败" + e.getLocalizedMessage());
             Toast.makeText(MainActivity.this, "登录失败，请检查用户名和密码", Toast.LENGTH_SHORT).show();
@@ -651,5 +689,103 @@ public class MainActivity extends AppCompatActivity {
             InputMethodManager manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             manager.hideSoftInputFromWindow(token, InputMethodManager.HIDE_NOT_ALWAYS);
         }
+    }
+
+    /**
+     * 申请好友时插入待定表
+     *
+     * @param promoter
+     * @param receiver
+     */
+    public void new_friend_request(String promoter, String receiver) {
+        Request.Builder builder = new Request.Builder().url(Flags.PREFIX + Flags.New_Friend_URL + promoter + File.separator + receiver);
+        Call call = client.newCall(builder.build());
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                String str = new String(response.body().bytes(), "utf-8");
+                JsonArray jsonArray = new JsonParser().parse(str).getAsJsonArray();
+                friendRequestList.clear();
+                for (int i = 0; i < jsonArray.size(); i++) {
+                    FriendRequest request = new Gson().fromJson(jsonArray.get(i), FriendRequest.class);
+                    friendRequestList.add(request);
+                }
+                System.out.println(str);
+            }
+        });
+    }
+
+    /**
+     * 请求申请列表
+     *
+     * @param promoter
+     * @param receiver
+     */
+    public void friendRequestList(String promoter, String receiver) {
+        Request.Builder builder = new Request.Builder().url(Flags.PREFIX + Flags.GET_Friend_List_URL + promoter + File.separator + receiver);
+        Call call = client.newCall(builder.build());
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.e("请求失败", "");
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                String str = new String(response.body().bytes(), "utf-8");
+                friendRequestList.clear();
+                JsonArray jsonArray = new JsonParser().parse(str).getAsJsonArray();
+                for (int i = 0; i < jsonArray.size(); i++) {
+                    FriendRequest request = new Gson().fromJson(jsonArray.get(i), FriendRequest.class);
+                    friendRequestList.add(request);
+                }
+                requestRefresh.sendEmptyMessage(1);
+                System.out.println(str);
+            }
+        });
+    }
+
+    Handler requestRefresh = new Handler() {
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            if (adapter != null)
+                adapter.notifyDataSetChanged();
+        }
+    };
+
+    /**
+     * 删除申请
+     *
+     * @param promoter
+     * @param receiver
+     */
+    public void delete_friend_request(String promoter, String receiver) {
+        Request.Builder builder = new Request.Builder().url(Flags.PREFIX + Flags.DELETE_Friend_URL + promoter + File.separator + receiver);
+        Call call = client.newCall(builder.build());
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.e("请求失败", "");
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                String str = new String(response.body().bytes(), "utf-8");
+                JsonArray jsonArray = new JsonParser().parse(str).getAsJsonArray();
+                friendRequestList.clear();
+                for (int i = 0; i < jsonArray.size(); i++) {
+                    FriendRequest request = new Gson().fromJson(jsonArray.get(i), FriendRequest.class);
+                    friendRequestList.add(request);
+                }
+                System.out.println(str);
+            }
+        });
     }
 }

@@ -28,5 +28,6 @@
         android:gravity="center"
         android:paddingTop="2dp"
         android:paddingBottom="2dp"
+        android:textColor="@color/black"
         android:textSize="15sp" />
 </FrameLayout>

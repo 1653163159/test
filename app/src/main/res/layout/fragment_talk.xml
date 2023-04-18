@@ -33,6 +33,7 @@
             android:gravity="center"
             android:drawableLeft="@drawable/arrow_right"
             android:paddingTop="2dp"
+            android:textColor="@color/black"
             android:paddingBottom="2dp"
             android:textSize="20sp" />
     </LinearLayout>

@@ -39,4 +39,7 @@ public class Flags {
     public final static String STACK_BOOK_URL = "getChapterList/";//参数：bookName
     public final static String WORD_URL = "getWordList/";//参数：level;position(可选)
     public final static String QUIZ_URL = "getQuizByLevel/";//参数：level;position(可选)
+    public final static String New_Friend_URL = "new_friend_request/";//参数：发起人/接收人
+    public final static String GET_Friend_List_URL = "friend_request_list/";//参数：发起人/接收人
+    public final static String DELETE_Friend_URL = "delete_friend_request/";//参数：发起人/接收人
 }
