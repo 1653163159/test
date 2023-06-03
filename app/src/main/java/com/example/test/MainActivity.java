@@ -483,7 +483,7 @@ public class MainActivity extends AppCompatActivity {
                 dialog.dismiss();
             }
         }).create().show();
-    }
+}
 
 
     /**
@@ -631,7 +631,7 @@ public class MainActivity extends AppCompatActivity {
 
     private int exitTime = 2;
 
-    //重写系统返回键的功能（仅在当前页面生效）
+    //重写系统返回键的功能（仅在当前页面activity生效）
     @Override
     public void onBackPressed() {
         if (talkFragment.isTalking) {

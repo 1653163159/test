@@ -229,6 +229,7 @@ public class TalkFragment extends Fragment {
      */
     public void refreshItems(SmarkUtil smarkUtil) {
         userItems.clear();
+        if (smarkUtil == null) return;
         if (smarkUtil.isLogin()) {
             try {
                 smarkUtil.getAllEntries(userItems);

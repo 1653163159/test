@@ -186,10 +186,24 @@ public class ExamFragment extends Fragment {
             if (examItems.get(position).getIdhsk().equals("当前资源没有搜集到哦")) return;
             pg.setVisibility(View.VISIBLE);
             pg.bringToFront();
-            Request.Builder builder = null;
-            builder = new Request.Builder().url(prefix + "exam/HSK/" + examItems.get(position).getIdhsk());
-            Call call = client.newCall(builder.build());
-            call.enqueue(examCallback);
+            String subjectPath = getActivity().getExternalCacheDir().getAbsolutePath() + File.separator + examItems.get(position).getIdhsk() + "-question.json";
+            String answerPath = getActivity().getExternalCacheDir().getAbsolutePath() + File.separator + examItems.get(position).getIdhsk() + "-answer.json";
+            String audioPath = getActivity().getExternalCacheDir().getAbsolutePath() + File.separator + examItems.get(position).getIdhsk() + "-audio.mp3";
+            //判断是否缓存过试题，如果之前加载过则读取本地文件，否则请求网络资源
+            try {
+                File file = new File(subjectPath);
+                if (file.exists()) {
+                    Navigation(subjectPath, answerPath, audioPath, position);
+                    pg.setVisibility(View.INVISIBLE);
+                } else {
+                    Request.Builder builder = null;
+                    builder = new Request.Builder().url(prefix + "exam/HSK/" + examItems.get(position).getIdhsk());
+                    Call call = client.newCall(builder.build());
+                    call.enqueue(examCallback);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             index = position;
         }
     };

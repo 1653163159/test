@@ -54,6 +54,8 @@ import okhttp3.Response;
 public class PassActivity extends AppCompatActivity {
     OkHttpClient client = new OkHttpClient();
 
+    int right = 0, wrong = 0;//统计正确题数，错误题数
+
     TextView title, practice_position;
     ImageView back;
     Button submit;
@@ -126,18 +128,31 @@ public class PassActivity extends AppCompatActivity {
             dialog.setTitle("提示").setMessage("是否提交").setPositiveButton("确认", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    bar.setVisibility(View.VISIBLE);
-                    int count = passStateList.get(index).getTimes();
-                    if (count > 0) {
-                        count -= 1;
-                        passStateList.get(index).setTimes(count);
-                    }
-                    if (count == 0) {
-                        if (index < passStateList.size() - 1) {
-                            passStateList.get(index + 1).setState(PassFragment.STATE_UNLOCK);
+                    String temp = "不合格，请多努力";
+                    if (right > 24) {
+                        //修改通关次数
+                        temp = "恭喜通关";
+                        bar.setVisibility(View.VISIBLE);
+                        int count = passStateList.get(index).getTimes();
+                        if (count > 0) {
+                            count -= 1;
+                            passStateList.get(index).setTimes(count);
                         }
+                        if (count == 0) {
+                            if (index < passStateList.size() - 1) {
+                                passStateList.get(index + 1).setState(PassFragment.STATE_UNLOCK);
+                            }
+                        }
+                        UpdateJson();
                     }
-                    UpdateJson();
+                    //统计结果
+                    new AlertDialog.Builder(PassActivity.this).setTitle("成绩" + temp).setMessage("正确数：" + right + "\n错误数：" + wrong).setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            onBackPressed();
+                        }
+                    }).create().show();
                 }
             }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
                 @Override
@@ -250,8 +265,10 @@ public class PassActivity extends AppCompatActivity {
                 RadioButton button = view.findViewById(checkedId);
                 if (button.getText().equals(quiz.getAnswer())) {
                     button.setButtonDrawable(R.drawable.check_circle_right);
+                    right++;
                 } else {
                     button.setButtonDrawable(R.drawable.check_circle__wrong);
+                    wrong++;
                 }
                 for (int i = 0; i < group.getChildCount(); i++) {
                     group.getChildAt(i).setEnabled(false);

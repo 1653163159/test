@@ -182,6 +182,24 @@ public class SubjectActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 onBackPressed();
             }
+        }).setNegativeButton("查看答案", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String temp = "";
+                for (int i = 0; i < answerItems.size(); i++) {
+                    if ((i + 1) % 4 == 0) {
+                        temp+=answerItems.get(i).getNumber()+"."+answerItems.get(i).getAnswer()+"\n";
+                    }else {
+                        temp+=answerItems.get(i).getNumber()+"."+answerItems.get(i).getAnswer()+"     ";
+                    }
+                }
+                new AlertDialog.Builder(SubjectActivity.this).setTitle("答案").setMessage(temp).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).show();
+            }
         }).create().show();
     }
 
